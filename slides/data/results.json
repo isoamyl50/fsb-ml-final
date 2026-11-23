@@ -1,0 +1,156 @@
+{
+  "project": {
+    "title": "[TODO: Tên đề tài phân loại]",
+    "team": [
+      "[TODO: Thành viên 1]",
+      "[TODO: Thành viên 2]",
+      "[TODO: Thành viên 3]"
+    ],
+    "instructor": "PhD. Truc Thi Kim, Nguyen",
+    "task_type": "[TODO: image_classification | text_classification | tabular_classification]"
+  },
+  "dataset": {
+    "name": "[TODO: Tên dataset]",
+    "source": "[TODO: Kaggle | Roboflow]",
+    "url": "[TODO: URL dataset]",
+    "num_samples": null,
+    "num_classes": null,
+    "class_names": [
+      "[TODO: class_0]",
+      "[TODO: class_1]"
+    ],
+    "features_summary": "[TODO: VD ảnh RGB 224x224 hoặc 20 đặc trưng bảng]",
+    "split_ratio": "[TODO: VD 70% Train / 15% Val / 15% Test (Stratified)]",
+    "imbalance_notes": "[TODO: Nhận xét mức độ cân bằng giữa các lớp]"
+  },
+  "preprocessing": {
+    "steps": [
+      "[TODO: Làm sạch dữ liệu / kiểm tra thiếu & trùng lặp]",
+      "[TODO: Chuẩn hóa / mã hóa đặc trưng]"
+    ],
+    "augmentation": [
+      "[TODO: Các phép tăng cường dữ liệu áp dụng trên tập Train]"
+    ],
+    "imbalance_handling": "[TODO: Class weights / Oversampling / Không cần]",
+    "ablation": [
+      {
+        "variant": "Chưa tiền xử lý / Không Augmentation",
+        "model": "[TODO: Tên model]",
+        "accuracy": null,
+        "macro_f1": null,
+        "notes": "[TODO]"
+      },
+      {
+        "variant": "Đã tiền xử lý + Augmentation",
+        "model": "[TODO: Tên model]",
+        "accuracy": null,
+        "macro_f1": null,
+        "notes": "[TODO]"
+      }
+    ]
+  },
+  "models": [
+    {
+      "name": "[TODO: Mô hình 1 (Baseline)]",
+      "role": "Baseline",
+      "architecture": "[TODO: VD Custom CNN / Logistic Regression / Random Forest]",
+      "rationale": "[TODO: Lý do lựa chọn mô hình này]",
+      "params_count": "[TODO: VD 1.2M hoặc N/A]",
+      "training_setup": {
+        "loss": "[TODO: CrossEntropyLoss]",
+        "optimizer": "[TODO: Adam]",
+        "lr": "[TODO: 1e-3]",
+        "batch_size": null,
+        "epochs": null,
+        "regularization": "[TODO: Dropout, Weight Decay, Early Stopping]",
+        "train_time": "[TODO: VD 4 phút trên T4 GPU]"
+      },
+      "strengths": [
+        "[TODO: Điểm mạnh 1]"
+      ],
+      "weaknesses": [
+        "[TODO: Điểm yếu 1]"
+      ]
+    },
+    {
+      "name": "[TODO: Mô hình 2 (Nâng cao)]",
+      "role": "Primary",
+      "architecture": "[TODO: VD ResNet18 / EfficientNet / Transformer / XGBoost]",
+      "rationale": "[TODO: Lý do lựa chọn mô hình này]",
+      "params_count": "[TODO: VD 11.2M]",
+      "training_setup": {
+        "loss": "[TODO: CrossEntropyLoss / Weighted CE]",
+        "optimizer": "[TODO: AdamW]",
+        "lr": "[TODO: 3e-4]",
+        "batch_size": null,
+        "epochs": null,
+        "regularization": "[TODO: Dropout, Weight Decay, Early Stopping]",
+        "train_time": "[TODO: VD 8 phút trên T4 GPU]"
+      },
+      "strengths": [
+        "[TODO: Điểm mạnh 1]"
+      ],
+      "weaknesses": [
+        "[TODO: Điểm yếu 1]"
+      ]
+    }
+  ],
+  "evaluation": {
+    "test_metrics": [
+      {
+        "model": "[TODO: Mô hình 1]",
+        "accuracy": null,
+        "precision_macro": null,
+        "recall_macro": null,
+        "f1_macro": null,
+        "f1_weighted": null
+      },
+      {
+        "model": "[TODO: Mô hình 2]",
+        "accuracy": null,
+        "precision_macro": null,
+        "recall_macro": null,
+        "f1_macro": null,
+        "f1_weighted": null
+      }
+    ],
+    "per_class_report": {},
+    "top_confusions": [
+      "[TODO: Cặp lớp hay nhầm lẫn nhất và nguyên nhân]"
+    ],
+    "training_notes": "[TODO: Nhận xét tốc độ hội tụ, dấu hiệu overfitting/underfitting]"
+  },
+  "challenges": [
+    {
+      "problem": "[TODO: Thách thức 1]",
+      "solution": "[TODO: Cách khắc phục 1]"
+    }
+  ],
+  "course_reflections": [
+    {
+      "concept": "Bias – Variance Trade-off",
+      "application": "[TODO: Cách áp dụng thực tế trong đồ án]"
+    },
+    {
+      "concept": "Regularization & Early Stopping",
+      "application": "[TODO: Cách áp dụng thực tế trong đồ án]"
+    }
+  ],
+  "conclusions": {
+    "recommended_model": "[TODO: Tên mô hình tốt nhất]",
+    "key_takeaways": [
+      "[TODO: Kết luận chính 1]"
+    ],
+    "future_work": [
+      "[TODO: Hướng phát triển tiếp theo]"
+    ]
+  },
+  "figures": {
+    "class_distribution": "",
+    "dataset_samples": "",
+    "training_curves": "",
+    "confusion_matrices": "",
+    "error_analysis": "",
+    "preprocessing_impact": ""
+  }
+}

@@ -1,0 +1,87 @@
+AI - MACHINE LEARNING
+PhD. Truc Thi Kim, Nguyen
+1
+
+FINAL COURSE PROJECT
+2
+
+Final Course Project - Teamwork
+Topic: Classification Task Using Public Datasets
+Objective:
+Students will select a publicly available dataset from Kaggle or Roboflow to conduct a classification task. The project should apply the concepts learned throughout the course, analyze the dataset, train and evaluate classification models, and provide insights into their findings.
+
+3
+
+Project Requirements
+1. Dataset Selection
+Choose a dataset from Kaggle or Roboflow that is suitable for a classification task (e.g., image classification, text classification, tabular data classification).
+Provide a brief explanation of the dataset, including: 
+Number of samples and classes
+Features or attributes
+Any preprocessing needed
+2. Model Selection & Implementation
+Apply at least two different classification models to compare their performance.
+Possible models include: 
+Deep learning models (CNNs for images, RNNs for sequential data, Transformers, etc.)
+Use proper data preprocessing and augmentation techniques when necessary.
+
+4
+
+Project Requirements
+3. Performance Evaluation
+Use appropriate metrics to evaluate model performance, such as: 
+Accuracy, Precision, Recall, F1-score for multi-class classification
+Provide visualizations (confusion matrices, loss curves, accuracy plots, etc.) to support your analysis.
+4. Comparison & Insights
+Compare the results of different models and discuss: 
+Strengths and weaknesses of each approach
+The impact of different preprocessing techniques
+Any challenges encountered and how they were addressed
+Reflect on how the concepts learned in the course helped in understanding and improving the classification models.
+5. Report & Presentation
+Final report (PDF or Jupyter Notebook) should include: 
+Introduction to the problem and dataset
+Methodology (data preprocessing, model training, evaluation)
+Experimental results and comparison
+Conclusion and key takeaways
+Presentation (5-10 minutes) summarizing the main findings and lessons learned.
+
+NOTE: Bonus marks will be awarded for writing a research paper based on the project report. 
+5
+
+Submission Details
+Deadline: 
+Format: Submit your project as a Jupyter Notebook (.ipynb) or Python script (.py) with a report (.pdf/.docx).
+Evaluation Criteria:
+Data exploration and preprocessing (20%)
+Model selection and implementation (30%)
+Performance analysis and visualization (20%)
+Comparison and insights (20%)
+Presentation and clarity (10%)
+6
+
+Expected Learning Outcomes
+By completing this project, students will:
+Gain hands-on experience in handling real-world datasets
+Apply various classification models and evaluate their effectiveness
+Understand the impact of data preprocessing, feature engineering, and hyperparameter tuning
+Develop skills in performance comparison and visualization
+Strengthen their ability to analyze results and draw meaningful conclusions
+7
+
+8
+
+QUY TRÌNH XÂY DỰNG MỘT DỰ ÁN ỨNG DỤNG TRÍ TUỆ NHÂN TẠO
+9
+
+10
+MACHINE LEARNING PROJECT LIFECYCLE 
+
+REFERENCES
+https://github.com/ashishpatel26/Andrew-NG-Notes
+GitHub - abdur75648/Deep-Learning-Specialization-Coursera: This repo contains the updated version of all the assignments/labs (done by me) of Deep Learning Specialization on Coursera by Andrew Ng. It includes building various deep learning models from scratch and implementing them for object detection, facial recognition, autonomous driving, neural machine translation, trigger word detection, etc.
+
+11
+
+THANK YOU
+12

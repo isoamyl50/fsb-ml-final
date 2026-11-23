@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.slidev/
+exports/*.pdf
+*.pdf
+.DS_Store
+__pycache__/
+*.pyc

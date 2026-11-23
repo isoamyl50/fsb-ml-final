@@ -1,0 +1,79 @@
+{
+  "run_id": "20261123_085923_baseline_hgb_fixed_3class_p2_domain_a027",
+  "timestamp_utc": "2026-11-23T08:59:23.613556+00:00",
+  "author": "baseline",
+  "git_commit": "uncommitted",
+  "git_dirty": true,
+  "hardware": "CPU",
+  "seed": 42,
+  "outlier_filter": false,
+  "binning": {
+    "name": "fixed_3class",
+    "bin_id": "fixed_3class_[4.0, 7.0]",
+    "edges": [
+      4.0,
+      7.0
+    ],
+    "labels": [
+      "Phổ thông (< 4 tỷ)",
+      "Trung cấp (4–7 tỷ)",
+      "Cao cấp (≥ 7 tỷ)"
+    ],
+    "n_classes": 3,
+    "train_class_counts": {
+      "Phổ thông (< 4 tỷ)": 4805,
+      "Trung cấp (4–7 tỷ)": 9490,
+      "Cao cấp (≥ 7 tỷ)": 6866
+    }
+  },
+  "features": {
+    "name": "P2_domain",
+    "n_features": 301,
+    "scaled": false,
+    "preserve_nans": true
+  },
+  "model": {
+    "name": "hgb",
+    "params": {
+      "max_iter": 250,
+      "learning_rate": 0.05
+    }
+  },
+  "splits": {
+    "path": "splits_v1.json",
+    "n_train": 21161,
+    "n_val": 4535,
+    "n_test": 4533
+  },
+  "metrics": {
+    "val": {
+      "model": "hgb",
+      "accuracy": 0.731,
+      "precision_macro": 0.7425,
+      "recall_macro": 0.7349,
+      "f1_macro": 0.7384,
+      "f1_weighted": 0.7312,
+      "within_1_bin_acc": 0.9859,
+      "confusion_matrix": [
+        [
+          796,
+          195,
+          38
+        ],
+        [
+          170,
+          1482,
+          363
+        ],
+        [
+          26,
+          428,
+          1037
+        ]
+      ]
+    },
+    "test": null
+  },
+  "train_seconds": 21.69,
+  "notes": "P2 location + domain features with HistGradientBoosting"
+}

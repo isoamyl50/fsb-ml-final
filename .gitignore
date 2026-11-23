@@ -1,0 +1,42 @@
+# Raw & processed datasets (keep .gitkeep markers tracked)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+*.zip
+
+# Python & Jupyter
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.ipynb_checkpoints/
+.jupyter/
+.jupyter_ystore.db
+
+# Model binaries & large serialized artifacts
+artifacts/*.pt
+artifacts/*.pth
+artifacts/*.ckpt
+artifacts/*.pkl
+artifacts/*.joblib
+artifacts/*.npz
+artifacts/*.parquet
+
+# Generated flat CSV leaderboard (rebuild from experiments/runs/*.json)
+experiments/leaderboard.csv
+
+# Slidev generated outputs
+slides/node_modules/
+slides/dist/
+slides/.slidev/
+slides/exports/*.pdf
+*.pdf
+
+# OS & editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
