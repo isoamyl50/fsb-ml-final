@@ -1,38 +1,38 @@
 <div class="section-tag">05 • SO SÁNH &amp; PHÂN TÍCH SÂU (20%)</div>
 
-# So sánh Mô hình &amp; Phân tích Lỗi
+# So sánh Mô hình &amp; Phân tích Phần dư
 
 <div class="grid grid-cols-12 gap-4 items-start mt-1">
   <div class="col-span-6 space-y-2">
     <div class="card py-1.5">
-      <h2>Mô hình 1: <span class="todo-pill">[TODO]</span></h2>
+      <h2>Nhóm Tuyến tính &amp; Mạng Nơ-ron</h2>
       <ul class="text-xs mb-0">
-        <li><strong>Điểm mạnh:</strong> <span class="todo-pill">[TODO: Nhẹ, train nhanh, ít tham số, dễ triển khai]</span></li>
-        <li><strong>Điểm yếu:</strong> <span class="todo-pill">[TODO: Khả năng trích xuất đặc trưng hạn chế / dễ nhầm lớp phức tạp]</span></li>
+        <li><strong>Ưu điểm:</strong> <span class="todo-pill">[TODO: Ridge cực nhanh, dễ diễn giải; MLP học biểu diễn liên tục mượt]</span></li>
+        <li><strong>Hạn chế:</strong> <span class="todo-pill">[TODO: Tuyến tính khó nắm tương tác phi tuyến Diện tích × Vị trí]</span></li>
       </ul>
     </div>
     <div class="card py-1.5">
-      <h2>Mô hình 2: <span class="todo-pill">[TODO]</span></h2>
+      <h2>Nhóm Cây (RF / GBDT)</h2>
       <ul class="text-xs mb-0">
-        <li><strong>Điểm mạnh:</strong> <span class="todo-pill">[TODO: Độ chính xác và Macro F1 cao hơn, tổng quát hóa tốt]</span></li>
-        <li><strong>Điểm yếu:</strong> <span class="todo-pill">[TODO: Chi phí tính toán lớn hơn, cần tinh chỉnh cẩn thận tránh overfit]</span></li>
+        <li><strong>Ưu điểm:</strong> <span class="todo-pill">[TODO: RMSE thấp nhất, chống nhiễu tốt, xử lý tự nhiên giá trị NaN]</span></li>
+        <li><strong>Hạn chế:</strong> <span class="todo-pill">[TODO: Không ngoại suy vượt biên nếu gặp tổ hợp giá cực hiếm]</span></li>
       </ul>
     </div>
     <div class="callout py-1.5 text-xs">
-      <strong>Đánh đổi (Trade-off):</strong> <span class="todo-pill">[TODO: Hiệu năng vs. thời gian huấn luyện / kích thước mô hình]</span>
+      <strong>Đánh đổi (Trade-off):</strong> <span class="todo-pill">[TODO: Độ chính xác (RMSE/R²) vs. tốc độ suy luận và độ phức tạp triển khai]</span>
     </div>
   </div>
 
   <div class="col-span-6 space-y-2">
     <FigureSlot
-      expectedFile="public/figures/error_analysis.png"
-      caption="Hình 5: Các cặp lớp hay nhầm lẫn / mẫu dự đoán sai"
-      hint="Hiển thị các mẫu dự đoán sai tiêu biểu (ảnh kèm True/Pred) hoặc biểu đồ F1 theo từng lớp."
+      expectedFile="public/figures/residual_analysis.png"
+      caption="Hình 5: Phân bố Phần dư (y_pred - y_true) &amp; Feature Importance"
+      hint="Biểu đồ phần dư theo mức giá/khu vực và top đặc trưng quan trọng nhất."
       maxHeight="225px"
     />
     <div class="card py-2">
       <ul class="text-xs mb-0">
-        <li><strong>Nguyên nhân lỗi chính:</strong> <span class="todo-pill">[TODO: Lớp có ít mẫu / đặc trưng ngoại quan tương đồng / nhiễu nhãn]</span></li>
+        <li><strong>Nguyên nhân sai số lớn:</strong> <span class="todo-pill">[TODO: Giá trị thiếu mặt tiền/ngõ, biến động giá rao bán giữa môi giới, đặc trưng vị trí vi mô chưa có trong tin]</span></li>
       </ul>
     </div>
   </div>
@@ -40,8 +40,8 @@
 
 <!--
 [5:25 – 6:15 | ~50s]
-- Tổng hợp so sánh cho thấy sự đánh đổi rõ rệt giữa độ phức tạp và hiệu năng: Mô hình 1 chạy nhanh nhưng hạn chế ở các lớp khó, trong khi Mô hình 2 cải thiện mạnh chỉ số Recall và F1.
-- Khi kiểm tra các ca dự đoán sai trên Hình 5, nhóm nhận thấy phần lớn lỗi tập trung vào [TODO: cặp lớp hay nhầm] do [TODO: nguyên nhân từ dữ liệu hoặc đặc trưng gần giống nhau].
+- So sánh giữa các mô hình cho thấy nhóm mô hình cây (RF/GBDT) xử lý vượt trội các tương tác phi tuyến giữa diện tích và khu vực.
+- Khi phân tích phần dư ở Hình 5, sai số tập trung chủ yếu ở các tin thiếu thông tin mặt tiền/đường vào hoặc các căn có mức giá rao bán chủ quan chênh lệch lớn so với mặt bằng khu vực.
 -->
 
 ---
@@ -53,18 +53,18 @@
 <div class="grid grid-cols-12 gap-4 items-start mt-1">
   <div class="col-span-6 space-y-2">
   <div class="card py-2">
-    <h2>Tác động của Tiền xử lý / Augmentation</h2>
+    <h2>Tác động của Feature Engineering</h2>
 
-| Biến thể thí nghiệm | Accuracy | Macro F1 | Nhận xét |
+| Giai đoạn tiền xử lý | Val RMSE | Val R² | Nhận xét |
 |---|---|---|---|
-| Chưa tiền xử lý / Aug | `--` | `--` | `[TODO]` |
-| Đã tiền xử lý + Aug | `--` | `--` | `[TODO]` |
+| `P0_numeric` (6 cột số) | `--` | `--` | Chỉ biết quy mô, thiếu vị trí |
+| `P4_geo_priors` (+ Địa chỉ &amp; Priors) | `--` | `--` | `[TODO]` |
 
   </div>
-  <FigureSlot
+    <FigureSlot
       expectedFile="public/figures/preprocessing_impact.png"
-      caption="Hình 6: So sánh F1 / Accuracy trước và sau tiền xử lý"
-      hint="Biểu đồ cột thể hiện mức cải thiện trước/sau chuẩn hóa hoặc augmentation."
+      caption="Hình 6: Mức giảm RMSE và tăng R² từ P0 đến P4"
+      hint="Biểu đồ cột đối chiếu RMSE / R² qua các bước P0 → P2 → P3 → P4."
       maxHeight="195px"
     />
   </div>
@@ -72,22 +72,22 @@
   <div class="col-span-6 card space-y-2.5">
     <h2>Thách thức gặp phải &amp; Cách khắc phục</h2>
     <div class="callout callout-amber text-xs">
-      <strong>1. Thách thức:</strong> <span class="todo-pill">[TODO: VD Mất cân bằng lớp / dữ liệu nhiễu]</span><br/>
-      <strong>Giải pháp:</strong> <span class="todo-pill">[TODO: VD Dùng Class Weights / lọc nhiễu / Stratified split]</span>
+      <strong>1. Dữ liệu khuyết 40–83% ở các cột phụ:</strong><br/>
+      <strong>Giải pháp:</strong> Tránh <code>dropna()</code>; điền khuyết trung vị theo quận (chỉ fit trên Train) kèm biến cờ báo thiếu.
     </div>
     <div class="callout callout-amber text-xs">
-      <strong>2. Thách thức:</strong> <span class="todo-pill">[TODO: VD Overfitting nhanh trên tập Train nhỏ]</span><br/>
-      <strong>Giải pháp:</strong> <span class="todo-pill">[TODO: VD Bổ sung Augmentation, Dropout, Early Stopping]</span>
+      <strong>2. Địa chỉ tiếng Việt không đồng nhất &amp; lỗi Unicode:</strong><br/>
+      <strong>Giải pháp:</strong> Chuẩn hóa Unicode NFC, chuẩn hóa tên tỉnh thành và kết hợp OOF Target Encoding + TF-IDF Ridge.
     </div>
     <div class="callout callout-amber text-xs">
-      <strong>3. Thách thức:</strong> <span class="todo-pill">[TODO: VD Giới hạn GPU/RAM khi huấn luyện]</span><br/>
-      <strong>Giải pháp:</strong> <span class="todo-pill">[TODO: VD Điều chỉnh Batch Size, Resize hợp lý, Mixed Precision]</span>
+      <strong>3. Tin đăng lặp giá nhiễu (1,631 nhóm môi giới):</strong><br/>
+      <strong>Giải pháp:</strong> Áp dụng <code>StratifiedGroupKFold</code> theo khóa bất động sản để không rò rỉ sang Val/Test.
     </div>
   </div>
 </div>
 
 <!--
 [6:15 – 7:00 | ~45s]
-- Để trả lời câu hỏi tiền xử lý tác động ra sao, nhóm thực hiện đối chứng trước và sau khi áp dụng [chuẩn hóa / tăng cường dữ liệu]. Kết quả cho thấy Macro F1 cải thiện [TODO]%, chứng tỏ chất lượng đầu vào ảnh hưởng trực tiếp tới khả năng học của mô hình.
-- Trong quá trình thực hiện, nhóm cũng xử lý ba thách thức chính là [TODO], giúp mô hình ổn định hơn trên tập Test.
+- Bảng đối chứng cho thấy phần Feature Engineering từ chuỗi địa chỉ và đơn giá khu vực giúp giảm mạnh RMSE và nâng R² vượt bậc so với việc chỉ dùng 6 biến số ban đầu.
+- Bên cạnh đó, nhóm xử lý triệt để ba thách thức thực tế của dữ liệu web-scraped là dữ liệu thiếu nặng, lỗi Unicode địa chỉ và tin đăng lặp gây rò rỉ dữ liệu.
 -->

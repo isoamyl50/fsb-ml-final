@@ -5,15 +5,14 @@
 Before inspecting `data/raw/vietnam_housing_dataset.csv` or writing exploratory code, **read [`docs/dataset-investigation.md`](./docs/dataset-investigation.md)**. It already contains:
 - Exact schema, missingness rates, and quantiles across all `30,229` rows × `12` columns.
 - Verified data-quality traps (`dropna()` retention = 8.75%, Unicode NFD `'Hà Nội'` vs. NFC `'Hà Nội'`, `'TP. HCM'` alias, 5 malformed addresses, domain outliers, and 1,631 near-duplicate broker repost groups).
-- Baseline binning benchmarks justifying **3-class fixed domain binning (`< 4` / `4–7` / `≥ 7` tỷ VND)**.
-- Feature engineering roadmap and strict leakage guardrails.
+- Task definition (**continuous `Price` regression in billion VND**), target transforms (`raw`, `log1p`, `price_per_m2`, `log_price_per_m2`), and leakage guardrails.
 
-Also read [`experiments/leaderboard.md`](./experiments/leaderboard.md) before launching new experiments so you know the current best scores per binning scheme.
+Also read [`experiments/leaderboard.md`](./experiments/leaderboard.md) before launching new experiments so you know the current best `Val RMSE` and `R²`.
 
 ## 2. Multi-Contributor Experiment Architecture
 
 - **Do NOT edit shared pipeline defaults just to run a trial.** Register new options via:
-  - `src/binning.py` (`@register_binning`)
+  - `src/targets.py` (`register_target`)
   - `src/features.py` (`@register_features`)
   - `src/models.py` (`@register_model`)
 - **Run trials via `scripts/run_experiment.py`** (or `src.runner.run_and_log` in notebooks). Every run evaluates on the shared frozen `experiments/splits/splits_v1.json` (70/15/15 decile + group-stratified) and writes one conflict-free JSON file under `experiments/runs/`.
@@ -22,8 +21,8 @@ Also read [`experiments/leaderboard.md`](./experiments/leaderboard.md) before la
 
 ## 3. Leakage & Git Guardrails
 
-- **NEVER** use `Price`, `Price / Area`, or any price-derived value as an input feature.
-- Fit all imputers, scalers, encoders, TF-IDF/SVD transforms, quantile cutoffs, and out-of-fold target encoders strictly on `Train`.
+- **NEVER** use `Price`, `Price / Area`, or any target-derived value inside `transform(rows)` or as raw input features.
+- Fit all imputers, scalers, encoders, TF-IDF/SVD transforms, and 5-fold out-of-fold target encoders / `Price/m²` priors strictly on `Train`.
 - Raw/processed data (`data/raw/*.csv`, `data/processed/*`), model weights (`artifacts/*.pt`, `*.pkl`, etc.), `experiments/leaderboard.csv`, Python caches, and Slidev build/PDF artifacts are gitignored. Never force-commit data or binary weights.
 
 ## 4. Presentation Deck (`slides/`)

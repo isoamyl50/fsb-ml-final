@@ -1,10 +1,12 @@
-"""Helper utilities for exporting Jupyter Notebook plots and metrics into the Slidev deck."""
+"""Helper utilities for exporting Jupyter Notebook plots and regression metrics into Slidev."""
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
 from typing import Any, Sequence
+
+import numpy as np
 
 SLIDES_DIR = Path(__file__).resolve().parent.parent
 FIGURES_DIR = SLIDES_DIR / "public" / "figures"
@@ -88,56 +90,41 @@ def update_results(section: str, value: Any, path: Path = RESULTS_PATH) -> Path:
     return target
 
 
-def log_test_metrics(
+def log_regression_metrics(
     model_name: str,
-    y_true: Sequence[Any],
-    y_pred: Sequence[Any],
-    class_names: Sequence[str] | None = None,
+    y_true: Sequence[float] | np.ndarray,
+    y_pred: Sequence[float] | np.ndarray,
     path: Path = RESULTS_PATH,
 ) -> dict[str, Any]:
-    """Compute multi-class test metrics with scikit-learn and upsert into results.json."""
+    """Compute regression test metrics in billion VND and upsert into results.json."""
     try:
         from sklearn.metrics import (
-            accuracy_score,
-            classification_report,
-            precision_recall_fscore_support,
+            mean_absolute_error,
+            median_absolute_error,
+            r2_score,
+            root_mean_squared_error,
         )
     except ImportError as exc:
         raise ImportError(
-            "scikit-learn is required for log_test_metrics()."
+            "scikit-learn is required for log_regression_metrics()."
         ) from exc
 
-    acc = float(accuracy_score(y_true, y_pred))
-    prec_m, rec_m, f1_m, _ = precision_recall_fscore_support(
-        y_true, y_pred, average="macro", zero_division=0
-    )
-    _, _, f1_w, _ = precision_recall_fscore_support(
-        y_true, y_pred, average="weighted", zero_division=0
-    )
+    yt = np.asarray(y_true, dtype=float)
+    yp = np.asarray(y_pred, dtype=float)
+    abs_err = np.abs(yt - yp)
+    rel_err = abs_err / np.maximum(np.abs(yt), 1e-8)
 
     summary = {
         "model": model_name,
-        "accuracy": round(acc, 4),
-        "precision_macro": round(float(prec_m), 4),
-        "recall_macro": round(float(rec_m), 4),
-        "f1_macro": round(float(f1_m), 4),
-        "f1_weighted": round(float(f1_w), 4),
+        "rmse": round(float(root_mean_squared_error(yt, yp)), 4),
+        "mae": round(float(mean_absolute_error(yt, yp)), 4),
+        "medae": round(float(median_absolute_error(yt, yp)), 4),
+        "r2": round(float(r2_score(yt, yp)), 4),
+        "mape": round(float(np.mean(rel_err) * 100.0), 2),
+        "within_10pct": round(float(np.mean(rel_err <= 0.10)), 4),
+        "within_20pct": round(float(np.mean(rel_err <= 0.20)), 4),
+        "within_1ty": round(float(np.mean(abs_err <= 1.0)), 4),
     }
-
-    report_kwargs: dict[str, Any] = {"output_dict": True, "zero_division": 0}
-    if class_names is not None:
-        report_kwargs["target_names"] = list(class_names)
-    raw_report = classification_report(y_true, y_pred, **report_kwargs)
-
-    formatted_report: dict[str, Any] = {}
-    for key, val in raw_report.items():
-        if isinstance(val, dict):
-            formatted_report[str(key)] = {
-                metric: round(float(score), 4) if metric != "support" else int(score)
-                for metric, score in val.items()
-            }
-        else:
-            formatted_report[str(key)] = round(float(val), 4)
 
     target = Path(path)
     data = load_results(target)
@@ -150,9 +137,6 @@ def log_test_metrics(
     ]
     existing_metrics.append(summary)
     evaluation["test_metrics"] = existing_metrics
-
-    per_class = evaluation.setdefault("per_class_report", {})
-    per_class[model_name] = formatted_report
 
     update_results("evaluation", evaluation, path=target)
     return summary

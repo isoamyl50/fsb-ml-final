@@ -1,4 +1,4 @@
-"""Pluggable model registry for linear, tree-based, and PyTorch neural classifiers."""
+"""Pluggable model registry for continuous house price regression models."""
 
 from __future__ import annotations
 
@@ -7,16 +7,20 @@ from dataclasses import dataclass
 from typing import Any, Callable
 
 import numpy as np
-from sklearn.ensemble import HistGradientBoostingClassifier, RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import f1_score
+from sklearn.ensemble import (
+    ExtraTreesRegressor,
+    HistGradientBoostingRegressor,
+    RandomForestRegressor,
+)
+from sklearn.linear_model import Lasso, Ridge
+from sklearn.metrics import mean_absolute_error, r2_score, root_mean_squared_error
 
 from .config import RANDOM_SEED
 
 
 @dataclass(frozen=True)
 class ModelSpec:
-    """Metadata and factory callable for one registered model family."""
+    """Metadata and factory callable for one registered regression model family."""
 
     name: str
     builder: Callable[..., Any]
@@ -34,7 +38,7 @@ def register_model(
     supports_nans: bool,
     accepts_val: bool = False,
 ) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
-    """Decorator registering a model factory function."""
+    """Decorator registering a regression model factory."""
 
     def _decorator(fn: Callable[..., Any]) -> Callable[..., Any]:
         MODEL_REGISTRY[name] = ModelSpec(
@@ -50,7 +54,7 @@ def register_model(
 
 
 def list_models() -> list[str]:
-    """Return sorted registered model names."""
+    """Return sorted registered regression model names."""
     return sorted(MODEL_REGISTRY.keys())
 
 
@@ -81,59 +85,79 @@ def parse_param_value(raw: str) -> Any:
         return text
 
 
-@register_model("logreg", needs_scaling=True, supports_nans=False, accepts_val=False)
-def build_logistic_regression(
-    random_state: int = RANDOM_SEED,
-    **kwargs: Any,
-) -> LogisticRegression:
-    """Build multinomial Logistic Regression baseline."""
-    params: dict[str, Any] = {
-        "max_iter": 1000,
-        "C": 1.0,
-        "random_state": random_state,
-    }
+@register_model("ridge", needs_scaling=True, supports_nans=False, accepts_val=False)
+def build_ridge(random_state: int = RANDOM_SEED, **kwargs: Any) -> Ridge:
+    """Build L2-regularized linear Ridge baseline."""
+    params: dict[str, Any] = {"alpha": 10.0, "random_state": random_state}
     params.update(kwargs)
-    return LogisticRegression(**params)
+    return Ridge(**params)
+
+
+@register_model("lasso", needs_scaling=True, supports_nans=False, accepts_val=False)
+def build_lasso(random_state: int = RANDOM_SEED, **kwargs: Any) -> Lasso:
+    """Build L1-regularized sparse linear Lasso baseline."""
+    params: dict[str, Any] = {"alpha": 0.005, "max_iter": 3000, "random_state": random_state}
+    params.update(kwargs)
+    return Lasso(**params)
 
 
 @register_model("hgb", needs_scaling=False, supports_nans=True, accepts_val=False)
 def build_hist_gbdt(
     random_state: int = RANDOM_SEED,
     **kwargs: Any,
-) -> HistGradientBoostingClassifier:
-    """Build HistGradientBoostingClassifier (supports native NaNs in numeric features)."""
+) -> HistGradientBoostingRegressor:
+    """Build HistGradientBoostingRegressor with column subsampling & regularization."""
     params: dict[str, Any] = {
-        "max_iter": 250,
-        "learning_rate": 0.05,
+        "loss": "squared_error",
+        "max_iter": 400,
+        "learning_rate": 0.04,
+        "max_leaf_nodes": 63,
+        "min_samples_leaf": 25,
+        "l2_regularization": 2.0,
+        "max_features": 0.4,
         "early_stopping": True,
         "validation_fraction": 0.15,
         "random_state": random_state,
     }
     params.update(kwargs)
-    return HistGradientBoostingClassifier(**params)
+    return HistGradientBoostingRegressor(**params)
 
 
 @register_model("rf", needs_scaling=False, supports_nans=False, accepts_val=False)
 def build_random_forest(
     random_state: int = RANDOM_SEED,
     **kwargs: Any,
-) -> RandomForestClassifier:
-    """Build RandomForestClassifier baseline."""
+) -> RandomForestRegressor:
+    """Build RandomForestRegressor."""
     params: dict[str, Any] = {
-        "n_estimators": 300,
+        "n_estimators": 400,
+        "max_features": "sqrt",
         "n_jobs": -1,
         "random_state": random_state,
     }
     params.update(kwargs)
-    return RandomForestClassifier(**params)
+    return RandomForestRegressor(**params)
+
+
+@register_model("et", needs_scaling=False, supports_nans=False, accepts_val=False)
+def build_extra_trees(
+    random_state: int = RANDOM_SEED,
+    **kwargs: Any,
+) -> ExtraTreesRegressor:
+    """Build ExtraTreesRegressor."""
+    params: dict[str, Any] = {
+        "n_estimators": 400,
+        "max_features": "sqrt",
+        "n_jobs": -1,
+        "random_state": random_state,
+    }
+    params.update(kwargs)
+    return ExtraTreesRegressor(**params)
 
 
 @register_model("lgbm", needs_scaling=False, supports_nans=True, accepts_val=True)
-def build_lgbm(
-    random_state: int = RANDOM_SEED,
-    **kwargs: Any,
-) -> Any:
-    """Build LightGBM classifier (lazy import so local envs without lightgbm stay clean)."""
+def build_lgbm(random_state: int = RANDOM_SEED, **kwargs: Any) -> Any:
+    """Build LightGBM regressor (lazy import)."""
     try:
         import lightgbm as lgb
     except ImportError as exc:
@@ -142,27 +166,25 @@ def build_lgbm(
         ) from exc
 
     params: dict[str, Any] = {
-        "n_estimators": 1000,
-        "learning_rate": 0.05,
-        "num_leaves": 31,
+        "n_estimators": 1500,
+        "learning_rate": 0.03,
+        "num_leaves": 63,
         "subsample_for_bin": 50000,
-        "colsample_bytree": 0.8,
+        "colsample_bytree": 0.5,
         "subsample": 0.8,
         "subsample_freq": 1,
+        "reg_lambda": 2.0,
         "random_state": random_state,
         "n_jobs": -1,
         "verbosity": -1,
     }
     params.update(kwargs)
-    return lgb.LGBMClassifier(**params)
+    return lgb.LGBMRegressor(**params)
 
 
 @register_model("xgb", needs_scaling=False, supports_nans=True, accepts_val=True)
-def build_xgb(
-    random_state: int = RANDOM_SEED,
-    **kwargs: Any,
-) -> Any:
-    """Build XGBoost classifier (lazy import; auto-uses CUDA hist when GPU is available)."""
+def build_xgb(random_state: int = RANDOM_SEED, **kwargs: Any) -> Any:
+    """Build XGBoost regressor (lazy import; auto-uses CUDA hist when GPU is available)."""
     try:
         import xgboost as xgb
     except ImportError as exc:
@@ -180,29 +202,52 @@ def build_xgb(
         pass
 
     params: dict[str, Any] = {
-        "n_estimators": 1000,
-        "learning_rate": 0.05,
+        "n_estimators": 1500,
+        "learning_rate": 0.03,
         "max_depth": 6,
         "subsample": 0.8,
-        "colsample_bytree": 0.8,
+        "colsample_bytree": 0.5,
+        "reg_lambda": 2.0,
         "tree_method": "hist",
         "device": device,
         "early_stopping_rounds": 50,
-        "eval_metric": "mlogloss",
+        "eval_metric": "rmse",
         "random_state": random_state,
         "n_jobs": -1,
     }
     params.update(kwargs)
-    return xgb.XGBClassifier(**params)
+    return xgb.XGBRegressor(**params)
+
+
+@register_model("catboost", needs_scaling=False, supports_nans=True, accepts_val=True)
+def build_catboost(random_state: int = RANDOM_SEED, **kwargs: Any) -> Any:
+    """Build CatBoost regressor (lazy import)."""
+    try:
+        from catboost import CatBoostRegressor
+    except ImportError as exc:
+        raise ImportError(
+            "catboost is required for model='catboost'. Install via `pip install catboost`."
+        ) from exc
+
+    params: dict[str, Any] = {
+        "iterations": 2000,
+        "learning_rate": 0.04,
+        "depth": 6,
+        "l2_leaf_reg": 3.0,
+        "loss_function": "RMSE",
+        "random_seed": random_state,
+        "verbose": 0,
+    }
+    params.update(kwargs)
+    return CatBoostRegressor(**params)
 
 
 def build_tabular_mlp(
     input_dim: int,
-    num_classes: int,
     hidden_dims: tuple[int, ...] = (128, 64),
     dropout: float = 0.25,
 ) -> Any:
-    """Build a PyTorch Tabular MLP (BatchNorm + ReLU + Dropout) when PyTorch is installed."""
+    """Build a PyTorch Tabular Regression MLP (BatchNorm1d + SiLU + Dropout)."""
     try:
         import torch.nn as nn
     except ImportError as exc:
@@ -217,17 +262,17 @@ def build_tabular_mlp(
             [
                 nn.Linear(in_features, hidden_dim),
                 nn.BatchNorm1d(hidden_dim),
-                nn.ReLU(),
+                nn.SiLU(),
                 nn.Dropout(dropout),
             ]
         )
         in_features = hidden_dim
-    layers.append(nn.Linear(in_features, num_classes))
+    layers.append(nn.Linear(in_features, 1))
     return nn.Sequential(*layers)
 
 
-class TabularMLPClassifier:
-    """Scikit-learn-style PyTorch Tabular MLP with validation early stopping and history."""
+class TabularMLPRegressor:
+    """Scikit-learn-style PyTorch Tabular MLP regressor with early stopping and history."""
 
     def __init__(
         self,
@@ -236,8 +281,9 @@ class TabularMLPClassifier:
         lr: float = 1e-3,
         weight_decay: float = 1e-4,
         batch_size: int = 256,
-        epochs: int = 40,
-        patience: int = 8,
+        epochs: int = 50,
+        patience: int = 10,
+        loss: str = "smooth_l1",
         random_state: int = RANDOM_SEED,
     ) -> None:
         self.hidden_dims = hidden_dims
@@ -247,13 +293,14 @@ class TabularMLPClassifier:
         self.batch_size = batch_size
         self.epochs = epochs
         self.patience = patience
+        self.loss = loss
         self.random_state = random_state
         self.history_: dict[str, list[float]] = {
             "train_loss": [],
             "val_loss": [],
-            "train_acc": [],
-            "val_acc": [],
-            "val_f1_macro": [],
+            "val_rmse": [],
+            "val_mae": [],
+            "val_r2": [],
         }
         self._model: Any = None
         self._device: str = "cpu"
@@ -263,7 +310,7 @@ class TabularMLPClassifier:
         X_train: np.ndarray,
         y_train: np.ndarray,
         eval_set: tuple[np.ndarray, np.ndarray] | None = None,
-    ) -> "TabularMLPClassifier":
+    ) -> "TabularMLPRegressor":
         try:
             import torch
             import torch.nn as nn
@@ -282,15 +329,13 @@ class TabularMLPClassifier:
         else:
             self._device = "cpu"
 
-        n_classes = int(np.max(y_train)) + 1
         self._model = build_tabular_mlp(
             input_dim=X_train.shape[1],
-            num_classes=n_classes,
             hidden_dims=tuple(self.hidden_dims),
             dropout=self.dropout,
         ).to(self._device)
 
-        criterion = nn.CrossEntropyLoss()
+        criterion = nn.MSELoss() if self.loss == "mse" else nn.SmoothL1Loss(beta=0.5)
         optimizer = torch.optim.AdamW(
             self._model.parameters(), lr=self.lr, weight_decay=self.weight_decay
         )
@@ -298,53 +343,52 @@ class TabularMLPClassifier:
 
         ds_tr = TensorDataset(
             torch.tensor(X_train, dtype=torch.float32),
-            torch.tensor(y_train, dtype=torch.long),
+            torch.tensor(y_train, dtype=torch.float32),
         )
         loader_tr = DataLoader(ds_tr, batch_size=self.batch_size, shuffle=True)
 
-        best_score = -1.0
+        best_rmse = float("inf")
         best_state = copy.deepcopy(self._model.state_dict())
         wait = 0
 
         for _ in range(self.epochs):
             self._model.train()
             tr_loss_sum = 0.0
-            tr_correct = 0
             tr_total = 0
             for xb, yb in loader_tr:
                 xb = xb.to(self._device)
                 yb = yb.to(self._device)
                 optimizer.zero_grad()
-                logits = self._model(xb)
-                loss = criterion(logits, yb)
-                loss.backward()
+                preds = self._model(xb).squeeze(-1)
+                loss_val = criterion(preds, yb)
+                loss_val.backward()
                 optimizer.step()
 
-                tr_loss_sum += float(loss.item()) * len(yb)
-                tr_correct += int((logits.argmax(dim=1) == yb).sum().item())
+                tr_loss_sum += float(loss_val.item()) * len(yb)
                 tr_total += len(yb)
 
             scheduler.step()
             self.history_["train_loss"].append(tr_loss_sum / max(tr_total, 1))
-            self.history_["train_acc"].append(tr_correct / max(tr_total, 1))
 
             if eval_set is not None:
                 x_va, y_va = eval_set
                 self._model.eval()
                 with torch.no_grad():
                     vx = torch.tensor(x_va, dtype=torch.float32, device=self._device)
-                    vy = torch.tensor(y_va, dtype=torch.long, device=self._device)
-                    v_logits = self._model(vx)
-                    v_loss = float(criterion(v_logits, vy).item())
-                    v_pred = v_logits.argmax(dim=1).cpu().numpy()
-                v_acc = float(np.mean(v_pred == y_va))
-                v_f1 = float(f1_score(y_va, v_pred, average="macro", zero_division=0))
+                    vy = torch.tensor(y_va, dtype=torch.float32, device=self._device)
+                    v_preds = self._model(vx).squeeze(-1)
+                    v_loss = float(criterion(v_preds, vy).item())
+                    v_np = v_preds.cpu().numpy()
+                v_rmse = float(root_mean_squared_error(y_va, v_np))
+                v_mae = float(mean_absolute_error(y_va, v_np))
+                v_r2 = float(r2_score(y_va, v_np))
                 self.history_["val_loss"].append(v_loss)
-                self.history_["val_acc"].append(v_acc)
-                self.history_["val_f1_macro"].append(v_f1)
+                self.history_["val_rmse"].append(v_rmse)
+                self.history_["val_mae"].append(v_mae)
+                self.history_["val_r2"].append(v_r2)
 
-                if v_f1 > best_score:
-                    best_score = v_f1
+                if v_rmse < best_rmse:
+                    best_rmse = v_rmse
                     best_state = copy.deepcopy(self._model.state_dict())
                     wait = 0
                 else:
@@ -362,14 +406,54 @@ class TabularMLPClassifier:
         self._model.eval()
         with torch.no_grad():
             tx = torch.tensor(X, dtype=torch.float32, device=self._device)
-            logits = self._model(tx)
-            return logits.argmax(dim=1).cpu().numpy()
+            return self._model(tx).squeeze(-1).cpu().numpy()
 
 
 @register_model("mlp", needs_scaling=True, supports_nans=False, accepts_val=True)
-def build_mlp_classifier(
+def build_mlp_regressor(
     random_state: int = RANDOM_SEED,
     **kwargs: Any,
-) -> TabularMLPClassifier:
-    """Build TabularMLPClassifier wrapper."""
-    return TabularMLPClassifier(random_state=random_state, **kwargs)
+) -> TabularMLPRegressor:
+    """Build TabularMLPRegressor wrapper."""
+    return TabularMLPRegressor(random_state=random_state, **kwargs)
+
+
+class BlendTreesRegressor:
+    """Weighted average blend of HistGradientBoosting, RandomForest, and ExtraTrees regressors."""
+
+    def __init__(
+        self,
+        random_state: int = RANDOM_SEED,
+        w_hgb: float = 0.45,
+        w_rf: float = 0.35,
+        w_et: float = 0.20,
+    ) -> None:
+        self.random_state = random_state
+        total_w = max(float(w_hgb + w_rf + w_et), 1e-12)
+        self.weights = (float(w_hgb) / total_w, float(w_rf) / total_w, float(w_et) / total_w)
+        self._hgb = build_hist_gbdt(random_state=random_state)
+        self._rf = build_random_forest(random_state=random_state + 1, n_estimators=500)
+        self._et = build_extra_trees(random_state=random_state + 2, n_estimators=500)
+
+    def fit(self, X: np.ndarray, y: np.ndarray) -> "BlendTreesRegressor":
+        self._hgb.fit(X, y)
+        self._rf.fit(X, y)
+        self._et.fit(X, y)
+        return self
+
+    def predict(self, X: np.ndarray) -> np.ndarray:
+        w1, w2, w3 = self.weights
+        return (
+            w1 * self._hgb.predict(X)
+            + w2 * self._rf.predict(X)
+            + w3 * self._et.predict(X)
+        )
+
+
+@register_model("blend_trees", needs_scaling=False, supports_nans=False, accepts_val=False)
+def build_blend_trees(
+    random_state: int = RANDOM_SEED,
+    **kwargs: Any,
+) -> BlendTreesRegressor:
+    """Build weighted HGB + RF + ET regression blend."""
+    return BlendTreesRegressor(random_state=random_state, **kwargs)

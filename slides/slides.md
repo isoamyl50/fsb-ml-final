@@ -1,6 +1,6 @@
 ---
 theme: default
-title: Đồ án Cuối kỳ — AI & Machine Learning
+title: Đồ án Cuối kỳ — Dự đoán Giá Nhà Việt Nam (AI & Machine Learning)
 titleTemplate: '%s'
 colorSchema: light
 aspectRatio: 16/9
@@ -27,10 +27,10 @@ layout: cover
 
 <div class="section-tag">AI - MACHINE LEARNING • ĐỒ ÁN CUỐI KỲ</div>
 
-# [TODO: Tên đề tài phân loại — VD: Phân loại ảnh X-quang phổi bằng Deep Learning]
+# Dự đoán Giá Nhà tại Việt Nam bằng Machine Learning &amp; Deep Learning
 
 <p class="text-lg text-slate-600 mt-2 mb-8">
-  So sánh hiệu năng các mô hình học máy và học sâu trên bộ dữ liệu <span class="todo-pill">[TODO: Tên Dataset]</span>
+  Xây dựng pipeline tiền xử lý dữ liệu bảng – văn bản và so sánh các mô hình hồi quy trên bộ dữ liệu <strong>Vietnam Housing Dataset 2024</strong>
 </p>
 
 <div class="grid grid-cols-2 gap-4 mt-8 pt-5 border-t border-slate-200 text-sm text-slate-700">
@@ -46,8 +46,7 @@ layout: cover
 
 <!--
 [0:00 – 0:15 | ~15s]
-- Chào Thầy/Cô và các bạn. Hôm nay nhóm xin trình bày đồ án cuối kỳ môn AI & Machine Learning.
-- Giới thiệu nhanh tên đề tài phân loại, bộ dữ liệu sử dụng và mục tiêu chính của bài báo cáo trong khoảng 8 phút.
+- Chào Thầy/Cô và các bạn. Hôm nay nhóm xin trình bày đồ án cuối kỳ môn AI & Machine Learning về bài toán dự đoán giá nhà tại Việt Nam từ dữ liệu tin đăng bất động sản thực tế năm 2024.
 -->
 
 ---

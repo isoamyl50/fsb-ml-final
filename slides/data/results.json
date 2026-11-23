@@ -1,50 +1,44 @@
 {
   "project": {
-    "title": "[TODO: Tên đề tài phân loại]",
+    "title": "Dự đoán Giá Nhà tại Việt Nam bằng Machine Learning & Deep Learning",
     "team": [
       "[TODO: Thành viên 1]",
       "[TODO: Thành viên 2]",
       "[TODO: Thành viên 3]"
     ],
     "instructor": "PhD. Truc Thi Kim, Nguyen",
-    "task_type": "[TODO: image_classification | text_classification | tabular_classification]"
+    "task_type": "tabular_regression"
   },
   "dataset": {
-    "name": "[TODO: Tên dataset]",
-    "source": "[TODO: Kaggle | Roboflow]",
-    "url": "[TODO: URL dataset]",
-    "num_samples": null,
-    "num_classes": null,
-    "class_names": [
-      "[TODO: class_0]",
-      "[TODO: class_1]"
-    ],
-    "features_summary": "[TODO: VD ảnh RGB 224x224 hoặc 20 đặc trưng bảng]",
-    "split_ratio": "[TODO: VD 70% Train / 15% Val / 15% Test (Stratified)]",
-    "imbalance_notes": "[TODO: Nhận xét mức độ cân bằng giữa các lớp]"
+    "name": "Vietnam Housing Dataset 2024",
+    "source": "Kaggle",
+    "url": "https://www.kaggle.com/datasets/nguyentiennhan/vietnam-housing-dataset-2024",
+    "num_samples": 30229,
+    "target_column": "Price (tỷ VND, [1.00 – 11.50])",
+    "features_summary": "11 đặc trưng đầu vào (Address văn bản + 6 biến số + 4 biến phân loại)",
+    "split_ratio": "70% Train (21,161) / 15% Val (4,535) / 15% Test (4,533) — Group-Stratified",
+    "distribution_notes": "Giá nhà phân bố trong khoảng 1.00 – 11.50 tỷ VND (trung vị 5.90, lệch chuẩn 2.21, độ lệch -0.03)."
   },
   "preprocessing": {
     "steps": [
-      "[TODO: Làm sạch dữ liệu / kiểm tra thiếu & trùng lặp]",
-      "[TODO: Chuẩn hóa / mã hóa đặc trưng]"
+      "Chuẩn hóa Unicode NFC & parse địa chỉ (City, District, Ward, Street)",
+      "Imputation theo trung vị nhóm District trên Train + cờ thiếu dữ liệu",
+      "Biến đổi log1p(Area), tỉ lệ cấu trúc, OOF Target Encoding & OOF Price/m² priors"
     ],
-    "augmentation": [
-      "[TODO: Các phép tăng cường dữ liệu áp dụng trên tập Train]"
-    ],
-    "imbalance_handling": "[TODO: Class weights / Oversampling / Không cần]",
+    "target_transform": "raw / log1p / price_per_m2 / log_price_per_m2 (quy đổi về tỷ VND)",
     "ablation": [
       {
-        "variant": "Chưa tiền xử lý / Không Augmentation",
+        "variant": "P0_numeric (6 biến số gốc)",
         "model": "[TODO: Tên model]",
-        "accuracy": null,
-        "macro_f1": null,
+        "rmse": null,
+        "r2": null,
         "notes": "[TODO]"
       },
       {
-        "variant": "Đã tiền xử lý + Augmentation",
+        "variant": "P4_geo_priors (Location + OOF Priors + Text)",
         "model": "[TODO: Tên model]",
-        "accuracy": null,
-        "macro_f1": null,
+        "rmse": null,
+        "r2": null,
         "notes": "[TODO]"
       }
     ]
@@ -53,45 +47,45 @@
     {
       "name": "[TODO: Mô hình 1 (Baseline)]",
       "role": "Baseline",
-      "architecture": "[TODO: VD Custom CNN / Logistic Regression / Random Forest]",
-      "rationale": "[TODO: Lý do lựa chọn mô hình này]",
-      "params_count": "[TODO: VD 1.2M hoặc N/A]",
+      "architecture": "[TODO: Ridge / Lasso Regression]",
+      "rationale": "[TODO: Làm mốc chuẩn tuyến tính, dễ diễn giải tác động tiền xử lý]",
+      "params_count": "[TODO]",
       "training_setup": {
-        "loss": "[TODO: CrossEntropyLoss]",
-        "optimizer": "[TODO: Adam]",
-        "lr": "[TODO: 1e-3]",
+        "loss": "Squared Error (L2)",
+        "optimizer": "Closed-form / L-BFGS",
+        "lr": "N/A",
         "batch_size": null,
         "epochs": null,
-        "regularization": "[TODO: Dropout, Weight Decay, Early Stopping]",
-        "train_time": "[TODO: VD 4 phút trên T4 GPU]"
+        "regularization": "[TODO: alpha=10.0]",
+        "train_time": "[TODO]"
       },
       "strengths": [
-        "[TODO: Điểm mạnh 1]"
+        "[TODO]"
       ],
       "weaknesses": [
-        "[TODO: Điểm yếu 1]"
+        "[TODO]"
       ]
     },
     {
       "name": "[TODO: Mô hình 2 (Nâng cao)]",
       "role": "Primary",
-      "architecture": "[TODO: VD ResNet18 / EfficientNet / Transformer / XGBoost]",
-      "rationale": "[TODO: Lý do lựa chọn mô hình này]",
-      "params_count": "[TODO: VD 11.2M]",
+      "architecture": "[TODO: HGB / LightGBM / XGBoost / CatBoost / PyTorch MLP]",
+      "rationale": "[TODO: Nắm bắt tương tác phi tuyến Diện tích × Khu vực]",
+      "params_count": "[TODO]",
       "training_setup": {
-        "loss": "[TODO: CrossEntropyLoss / Weighted CE]",
-        "optimizer": "[TODO: AdamW]",
-        "lr": "[TODO: 3e-4]",
+        "loss": "RMSE / SmoothL1Loss",
+        "optimizer": "[TODO: Tree Boosting / AdamW]",
+        "lr": "[TODO]",
         "batch_size": null,
         "epochs": null,
-        "regularization": "[TODO: Dropout, Weight Decay, Early Stopping]",
-        "train_time": "[TODO: VD 8 phút trên T4 GPU]"
+        "regularization": "[TODO: L2 reg, colsample, Dropout, Early Stopping]",
+        "train_time": "[TODO]"
       },
       "strengths": [
-        "[TODO: Điểm mạnh 1]"
+        "[TODO]"
       ],
       "weaknesses": [
-        "[TODO: Điểm yếu 1]"
+        "[TODO]"
       ]
     }
   ],
@@ -99,41 +93,51 @@
     "test_metrics": [
       {
         "model": "[TODO: Mô hình 1]",
-        "accuracy": null,
-        "precision_macro": null,
-        "recall_macro": null,
-        "f1_macro": null,
-        "f1_weighted": null
+        "rmse": null,
+        "mae": null,
+        "medae": null,
+        "r2": null,
+        "mape": null,
+        "within_10pct": null,
+        "within_20pct": null,
+        "within_1ty": null
       },
       {
         "model": "[TODO: Mô hình 2]",
-        "accuracy": null,
-        "precision_macro": null,
-        "recall_macro": null,
-        "f1_macro": null,
-        "f1_weighted": null
+        "rmse": null,
+        "mae": null,
+        "medae": null,
+        "r2": null,
+        "mape": null,
+        "within_10pct": null,
+        "within_20pct": null,
+        "within_1ty": null
       }
     ],
-    "per_class_report": {},
-    "top_confusions": [
-      "[TODO: Cặp lớp hay nhầm lẫn nhất và nguyên nhân]"
+    "segment_report": {},
+    "error_patterns": [
+      "[TODO: Phân khúc/khu vực có sai số lớn nhất và nguyên nhân]"
     ],
-    "training_notes": "[TODO: Nhận xét tốc độ hội tụ, dấu hiệu overfitting/underfitting]"
+    "training_notes": "[TODO: Nhận xét đường cong Loss/RMSE và hiện tượng overfitting]"
   },
   "challenges": [
     {
-      "problem": "[TODO: Thách thức 1]",
-      "solution": "[TODO: Cách khắc phục 1]"
+      "problem": "Tỉ lệ thiếu dữ liệu cao (Frontage 38%, Access Road 44%, Direction 70-83%)",
+      "solution": "Không dùng dropna() (chỉ còn 8.75%); dùng Train-only median imputation + cờ báo thiếu"
+    },
+    {
+      "problem": "Nhiễu Unicode NFD/NFC & tin đăng trùng lặp của môi giới (1,631 nhóm)",
+      "solution": "Chuẩn hóa Unicode NFC, map tên tỉnh thành chuẩn và dùng Group-Stratified Split"
     }
   ],
   "course_reflections": [
     {
       "concept": "Bias – Variance Trade-off",
-      "application": "[TODO: Cách áp dụng thực tế trong đồ án]"
+      "application": "[TODO: Đối chiếu mô hình tuyến tính vs Tree/MLP và vai trò feature subsampling]"
     },
     {
-      "concept": "Regularization & Early Stopping",
-      "application": "[TODO: Cách áp dụng thực tế trong đồ án]"
+      "concept": "Data Leakage & Kỷ luật Pipeline",
+      "application": "[TODO: OOF Target Encoding, Group-Stratified Split tránh rò rỉ dữ liệu]"
     }
   ],
   "conclusions": {
@@ -146,11 +150,11 @@
     ]
   },
   "figures": {
-    "class_distribution": "",
+    "price_distribution": "",
     "dataset_samples": "",
     "training_curves": "",
-    "confusion_matrices": "",
-    "error_analysis": "",
+    "pred_vs_actual": "",
+    "residual_analysis": "",
     "preprocessing_impact": ""
   }
 }

@@ -1,0 +1,54 @@
+{
+  "run_id": "20261123_113525_baseline_ridge_raw_p4_geo_priors_dcb8",
+  "timestamp_utc": "2026-11-23T11:35:25.602971+00:00",
+  "author": "baseline",
+  "git_commit": "25781f0",
+  "git_dirty": true,
+  "hardware": "CPU",
+  "seed": 42,
+  "outlier_filter": false,
+  "task": "regression",
+  "target": {
+    "name": "raw",
+    "unit": "billion_vnd"
+  },
+  "features": {
+    "name": "P4_geo_priors",
+    "n_features": 345,
+    "scaled": true,
+    "preserve_nans": false
+  },
+  "model": {
+    "name": "ridge",
+    "params": {}
+  },
+  "splits": {
+    "path": "splits_v1.json",
+    "n_train": 21161,
+    "n_val": 4535,
+    "n_test": 4533
+  },
+  "metrics": {
+    "val": {
+      "model": "ridge",
+      "rmse": 1.2794,
+      "mae": 0.9574,
+      "medae": 0.7355,
+      "r2": 0.6669,
+      "mape": 19.65,
+      "within_10pct": 0.3965,
+      "within_20pct": 0.6798,
+      "within_1ty": 0.6194,
+      "residual_quantiles": {
+        "p05": -2.1688,
+        "p25": -0.7505,
+        "p50": -0.0084,
+        "p75": 0.7136,
+        "p95": 1.9117
+      }
+    },
+    "test": null
+  },
+  "train_seconds": 0.023,
+  "notes": "P4 geo/ppm2 priors + OOF text Ridge regression"
+}

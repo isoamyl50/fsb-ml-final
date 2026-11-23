@@ -1,1 +1,1 @@
-"""Final project source package for Vietnam Housing 2024 price-tier classification."""
+"""Final project source package for Vietnam Housing 2024 price prediction (regression)."""

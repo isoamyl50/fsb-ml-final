@@ -1,0 +1,54 @@
+{
+  "run_id": "20261123_113626_baseline_rf_raw_p4_geo_priors_1b4b",
+  "timestamp_utc": "2026-11-23T11:36:26.661110+00:00",
+  "author": "baseline",
+  "git_commit": "25781f0",
+  "git_dirty": true,
+  "hardware": "CPU",
+  "seed": 42,
+  "outlier_filter": false,
+  "task": "regression",
+  "target": {
+    "name": "raw",
+    "unit": "billion_vnd"
+  },
+  "features": {
+    "name": "P4_geo_priors",
+    "n_features": 345,
+    "scaled": false,
+    "preserve_nans": false
+  },
+  "model": {
+    "name": "rf",
+    "params": {}
+  },
+  "splits": {
+    "path": "splits_v1.json",
+    "n_train": 21161,
+    "n_val": 4535,
+    "n_test": 4533
+  },
+  "metrics": {
+    "val": {
+      "model": "rf",
+      "rmse": 1.1948,
+      "mae": 0.8623,
+      "medae": 0.6239,
+      "r2": 0.7095,
+      "mape": 17.84,
+      "within_10pct": 0.4642,
+      "within_20pct": 0.7272,
+      "within_1ty": 0.6807,
+      "residual_quantiles": {
+        "p05": -2.0881,
+        "p25": -0.6305,
+        "p50": 0.0152,
+        "p75": 0.6193,
+        "p95": 1.8035
+      }
+    },
+    "test": null
+  },
+  "train_seconds": 3.841,
+  "notes": "P4 RandomForestRegressor baseline"
+}

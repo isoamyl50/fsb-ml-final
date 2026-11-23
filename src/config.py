@@ -1,4 +1,4 @@
-"""Canonical paths, constants, and environment-aware dataset resolution."""
+"""Canonical paths, constants, and environment-aware dataset resolution for regression."""
 
 from pathlib import Path
 
@@ -47,13 +47,9 @@ RAW_CAT_COLS = [
 ADDRESS_COL = "Address"
 TARGET_COL = "Price"
 
-# Recommended 3-class fixed domain price tiers (billion VND)
-PRICE_BIN_EDGES = [4.0, 7.0]
-PRICE_BIN_LABELS = [
-    "Phổ thông (< 4 tỷ)",
-    "Trung cấp (4–7 tỷ)",
-    "Cao cấp (≥ 7 tỷ)",
-]
+DEFAULT_TARGET_TRANSFORM = "raw"
+PRICE_MIN_CLIP = 0.5
+PRICE_MAX_CLIP = 15.0
 
 
 def resolve_dataset_path(explicit_path: str | Path | None = None) -> Path:

@@ -1,6 +1,6 @@
 # AI & Machine Learning — Final Course Project
 
-**Topic:** Multi-class House Price Tier Classification using the Vietnam Housing Dataset 2024 ([Kaggle](https://www.kaggle.com/datasets/nguyentiennhan/vietnam-housing-dataset-2024))  
+**Topic:** House Price Prediction (Continuous Regression) using the Vietnam Housing Dataset 2024 ([Kaggle](https://www.kaggle.com/datasets/nguyentiennhan/vietnam-housing-dataset-2024))  
 **Instructor:** PhD. Truc Thi Kim, Nguyen
 
 ---
@@ -10,7 +10,7 @@
 ```text
 final-project/
 ├── docs/
-│   └── dataset-investigation.md   # Full EDA findings, traps, binning benchmarks & recommendations
+│   └── dataset-investigation.md   # Full EDA findings, traps, regression targets & recommendations
 ├── data/
 │   ├── README.md                  # Dataset download instructions (local + Drive cache info)
 │   ├── raw/                       # Local CSV (gitignored): vietnam_housing_dataset.csv
@@ -18,18 +18,18 @@ final-project/
 ├── src/
 │   ├── config.py                  # Auto-resolves local data/raw/ vs Colab Drive cache paths
 │   ├── splits.py                  # Shared frozen decile+group-stratified split (splits_v1.json)
-│   ├── binning.py                 # Pluggable binning registry (fixed_3class, quantile_3class, ...)
-│   ├── features.py                # Pluggable feature recipes (P0_numeric .. P3_tfidf_te)
-│   ├── models.py                  # Model registry (logreg, hgb, rf, lgbm, xgb, mlp)
-│   ├── runner.py                  # Unified train -> evaluate -> atomic JSON run logger
+│   ├── targets.py                 # Pluggable target transforms (raw, log1p, price_per_m2, log_price_per_m2)
+│   ├── features.py                # Pluggable feature recipes (P0_numeric .. P4_geo_priors, P4_compact)
+│   ├── models.py                  # Regression model registry (ridge, lasso, hgb, rf, et, lgbm, xgb, catboost, mlp, blend_trees)
+│   ├── runner.py                  # Unified train -> invert target -> evaluate -> atomic JSON run log
 │   ├── leaderboard.py             # Aggregates runs/*.json into experiments/leaderboard.md
-│   ├── preprocessing.py           # Unicode NFC normalization, Address parser, outlier & bin helpers
-│   └── evaluate.py                # Multi-class metrics + ±1 bin accuracy + slide export bridge
+│   ├── preprocessing.py           # Unicode NFC normalization, Address parser, outlier helper
+│   └── evaluate.py                # Regression metrics (RMSE, MAE, R², MAPE, ±20%, ±1 tỷ) + Slidev bridge
 ├── experiments/
 │   ├── configs/                   # Reusable JSON/YAML experiment specs
 │   ├── splits/                    # Frozen shared split (splits_v1.json)
 │   ├── runs/                      # Append-only: one JSON log per run (conflict-free)
-│   └── leaderboard.md             # Auto-generated leaderboard grouped by binning strategy
+│   └── leaderboard.md             # Auto-generated regression leaderboard ranked by Val RMSE
 ├── scripts/
 │   ├── run_experiment.py          # CLI entrypoint for local or Colab GPU trials
 │   ├── build_leaderboard.py       # Rebuilds experiments/leaderboard.md from runs/*.json
@@ -46,8 +46,8 @@ final-project/
 
 ## Multi-Contributor Experiment Workflow
 
-1. **Read the investigation first:** [docs/dataset-investigation.md](./docs/dataset-investigation.md) summarizes all 12 columns, traps, and baseline findings.
-2. **List available binnings, feature recipes, and models:**
+1. **Read the investigation first:** [docs/dataset-investigation.md](./docs/dataset-investigation.md) summarizes all 12 columns, traps, and regression recommendations.
+2. **List available target transforms, feature recipes, and models:**
    ```bash
    python scripts/run_experiment.py --list
    ```
@@ -55,13 +55,13 @@ final-project/
    ```bash
    python scripts/run_experiment.py \
      --author your_name \
-     --binning fixed_3class \
-     --features P2_domain \
+     --target raw \
+     --features P4_geo_priors \
      --model hgb \
-     --param learning_rate=0.05 \
-     --notes "My trial"
+     --param learning_rate=0.04 \
+     --notes "My regression trial"
    ```
-   *(Or pass `--config experiments/configs/baseline_hgb_p2.json`.)*
+   *(Or pass `--config experiments/configs/baseline_hgb_p4.json`.)*
 4. **Refresh the team leaderboard:**
    ```bash
    python scripts/build_leaderboard.py

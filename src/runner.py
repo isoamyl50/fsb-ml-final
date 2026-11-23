@@ -1,4 +1,4 @@
-"""Shared experiment execution and per-run JSON logging engine."""
+"""Shared regression experiment execution and per-run JSON logging engine."""
 
 from __future__ import annotations
 
@@ -15,8 +15,8 @@ from typing import Any, Mapping, Sequence
 
 import numpy as np
 
-from .binning import apply_binning
 from .config import (
+    DEFAULT_TARGET_TRANSFORM,
     DRIVE_MOUNT_ROOT,
     DRIVE_RUNS_DIR,
     EXPERIMENTS_RUNS_DIR,
@@ -30,6 +30,7 @@ from .features import build_feature_recipe
 from .models import get_model_spec
 from .preprocessing import is_valid_domain_row
 from .splits import load_frozen_splits, load_raw_records
+from .targets import get_target_transform
 
 
 def _safe_slug(text: str) -> str:
@@ -99,25 +100,33 @@ def _fit_model(
     spec_name: str,
     clf: Any,
     X_train: np.ndarray,
-    y_train: np.ndarray,
+    y_train_t: np.ndarray,
     X_val: np.ndarray,
-    y_val: np.ndarray,
+    y_val_t: np.ndarray,
 ) -> None:
     if spec_name == "lgbm":
         import lightgbm as lgb
 
         clf.fit(
             X_train,
-            y_train,
-            eval_set=[(X_val, y_val)],
+            y_train_t,
+            eval_set=[(X_val, y_val_t)],
             callbacks=[lgb.early_stopping(50, verbose=False)],
         )
     elif spec_name == "xgb":
-        clf.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=False)
+        clf.fit(X_train, y_train_t, eval_set=[(X_val, y_val_t)], verbose=False)
+    elif spec_name == "catboost":
+        clf.fit(
+            X_train,
+            y_train_t,
+            eval_set=(X_val, y_val_t),
+            early_stopping_rounds=50,
+            verbose=False,
+        )
     elif spec_name == "mlp":
-        clf.fit(X_train, y_train, eval_set=(X_val, y_val))
+        clf.fit(X_train, y_train_t, eval_set=(X_val, y_val_t))
     else:
-        clf.fit(X_train, y_train)
+        clf.fit(X_train, y_train_t)
 
 
 def _atomic_write_json(path: Path, payload: Mapping[str, Any]) -> None:
@@ -129,11 +138,10 @@ def _atomic_write_json(path: Path, payload: Mapping[str, Any]) -> None:
 
 def run_and_log(
     author: str,
-    binning: str,
     features: str,
     model: str,
+    target: str = DEFAULT_TARGET_TRANSFORM,
     params: Mapping[str, Any] | None = None,
-    bin_edges: Sequence[float] | None = None,
     outlier_filter: bool = False,
     eval_test: bool = False,
     seed: int = RANDOM_SEED,
@@ -144,7 +152,7 @@ def run_and_log(
     splits_path: str | Path = EXPERIMENTS_SPLITS_PATH,
     runs_dir: str | Path = EXPERIMENTS_RUNS_DIR,
 ) -> dict[str, Any]:
-    """Execute one reproducible experiment on the shared frozen split and save a JSON run log."""
+    """Execute one reproducible regression run on the frozen split and log JSON."""
     rows = load_raw_records(csv_path)
     train_idx, val_idx, test_idx = load_frozen_splits(path=splits_path, rows=rows)
     if outlier_filter:
@@ -154,17 +162,17 @@ def run_and_log(
     val_rows = [rows[int(i)] for i in val_idx]
     test_rows = [rows[int(i)] for i in test_idx]
 
-    train_prices = [float(r[TARGET_COL]) for r in train_rows]
-    val_prices = [float(r[TARGET_COL]) for r in val_rows]
-    test_prices = [float(r[TARGET_COL]) for r in test_rows]
+    train_prices = np.array([float(r[TARGET_COL]) for r in train_rows], dtype=float)
+    val_prices = np.array([float(r[TARGET_COL]) for r in val_rows], dtype=float)
+    test_prices = np.array([float(r[TARGET_COL]) for r in test_rows], dtype=float)
 
-    bin_res = apply_binning(
-        name=binning,
-        train_prices=train_prices,
-        val_prices=val_prices,
-        test_prices=test_prices,
-        custom_edges=bin_edges,
-    )
+    train_areas = np.array([float(r["Area"]) for r in train_rows], dtype=float)
+    val_areas = np.array([float(r["Area"]) for r in val_rows], dtype=float)
+    test_areas = np.array([float(r["Area"]) for r in test_rows], dtype=float)
+
+    tfm = get_target_transform(target)
+    y_train_t = tfm.forward(train_prices, train_areas)
+    y_val_t = tfm.forward(val_prices, val_areas)
 
     spec = get_model_spec(model)
     recipe = build_feature_recipe(
@@ -172,34 +180,34 @@ def run_and_log(
         scale_numeric=spec.needs_scaling,
         preserve_nans=spec.supports_nans,
     )
-    X_train = recipe.fit_transform(train_rows, bin_res.y_train)
+    X_train = recipe.fit_transform(train_rows, y_train_price=train_prices)
     X_val = recipe.transform(val_rows)
 
     param_dict = dict(params or {})
-    clf = spec.builder(random_state=seed, **param_dict)
+    reg = spec.builder(random_state=seed, **param_dict)
 
     t0 = time.perf_counter()
-    _fit_model(spec.name, clf, X_train, bin_res.y_train, X_val, bin_res.y_val)
+    _fit_model(spec.name, reg, X_train, y_train_t, X_val, y_val_t)
     train_seconds = round(time.perf_counter() - t0, 3)
 
-    val_pred = clf.predict(X_val)
+    val_pred_t = reg.predict(X_val)
+    val_pred_price = tfm.inverse(val_pred_t, val_areas)
     val_metrics = evaluate_predictions(
         model_name=spec.name,
-        y_true=bin_res.y_val,
-        y_pred=val_pred,
-        class_names=bin_res.labels,
+        y_true=val_prices,
+        y_pred=val_pred_price,
         export_to_slides=False,
     )
 
     test_metrics: dict[str, Any] | None = None
     if eval_test:
         X_test = recipe.transform(test_rows)
-        test_pred = clf.predict(X_test)
+        test_pred_t = reg.predict(X_test)
+        test_pred_price = tfm.inverse(test_pred_t, test_areas)
         test_metrics = evaluate_predictions(
             model_name=spec.name,
-            y_true=bin_res.y_test,
-            y_pred=test_pred,
-            class_names=bin_res.labels,
+            y_true=test_prices,
+            y_pred=test_pred_price,
             export_to_slides=False,
         )
 
@@ -208,14 +216,10 @@ def run_and_log(
     short_uid = uuid.uuid4().hex[:4]
     run_id = (
         f"{ts_compact}_{_safe_slug(author)}_{_safe_slug(model)}_"
-        f"{_safe_slug(binning)}_{_safe_slug(features)}_{short_uid}"
+        f"{_safe_slug(target)}_{_safe_slug(features)}_{short_uid}"
     )
 
     git_commit, git_dirty = _detect_git_state()
-    class_counts = {
-        lbl: int(np.sum(bin_res.y_train == cls_id))
-        for cls_id, lbl in enumerate(bin_res.labels)
-    }
 
     payload: dict[str, Any] = {
         "run_id": run_id,
@@ -226,13 +230,10 @@ def run_and_log(
         "hardware": _detect_hardware(),
         "seed": seed,
         "outlier_filter": outlier_filter,
-        "binning": {
-            "name": bin_res.name,
-            "bin_id": bin_res.bin_id,
-            "edges": bin_res.edges,
-            "labels": bin_res.labels,
-            "n_classes": bin_res.n_classes,
-            "train_class_counts": class_counts,
+        "task": "regression",
+        "target": {
+            "name": tfm.name,
+            "unit": "billion_vnd",
         },
         "features": {
             "name": features,
@@ -258,8 +259,8 @@ def run_and_log(
         "notes": notes,
     }
 
-    if hasattr(clf, "history_") and isinstance(clf.history_, dict):
-        payload["history"] = clf.history_
+    if hasattr(reg, "history_") and isinstance(reg.history_, dict):
+        payload["history"] = reg.history_
 
     if save_run:
         out_path = Path(runs_dir) / f"{run_id}.json"

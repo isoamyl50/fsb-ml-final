@@ -1,0 +1,56 @@
+{
+  "run_id": "20261123_113518_baseline_ridge_raw_p0_numeric_9536",
+  "timestamp_utc": "2026-11-23T11:35:18.728149+00:00",
+  "author": "baseline",
+  "git_commit": "25781f0",
+  "git_dirty": true,
+  "hardware": "CPU",
+  "seed": 42,
+  "outlier_filter": false,
+  "task": "regression",
+  "target": {
+    "name": "raw",
+    "unit": "billion_vnd"
+  },
+  "features": {
+    "name": "P0_numeric",
+    "n_features": 6,
+    "scaled": true,
+    "preserve_nans": false
+  },
+  "model": {
+    "name": "ridge",
+    "params": {
+      "alpha": 10.0
+    }
+  },
+  "splits": {
+    "path": "splits_v1.json",
+    "n_train": 21161,
+    "n_val": 4535,
+    "n_test": 4533
+  },
+  "metrics": {
+    "val": {
+      "model": "ridge",
+      "rmse": 1.996,
+      "mae": 1.631,
+      "medae": 1.4383,
+      "r2": 0.1894,
+      "mape": 37.76,
+      "within_10pct": 0.2159,
+      "within_20pct": 0.4227,
+      "within_1ty": 0.3603,
+      "residual_quantiles": {
+        "p05": -3.4206,
+        "p25": -1.4,
+        "p50": 0.091,
+        "p75": 1.4519,
+        "p95": 3.1482
+      }
+    },
+    "test": null
+  },
+  "train_seconds": 0.008,
+  "notes": "P0 raw numeric Ridge regression baseline"
+}

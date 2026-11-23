@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Explicitly promote finalized experiment runs into slides/data/results.json."""
+"""Explicitly promote finalized regression runs into slides/data/results.json."""
 
 from __future__ import annotations
 
@@ -30,7 +30,7 @@ def _resolve_run_file(token: str, runs_dir: Path) -> Path:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Promote selected runs from experiments/runs/ into slides/data/results.json."
+        description="Promote selected regression runs from experiments/runs/ into slides/data/results.json."
     )
     parser.add_argument("--runs", nargs="+", required=True, help="Run IDs or unique prefixes to promote.")
     parser.add_argument(
@@ -46,8 +46,6 @@ def main() -> int:
     import slide_export
 
     promoted_metrics: list[dict[str, Any]] = []
-    bin_info: dict[str, Any] | None = None
-
     for token in args.runs:
         run_path = _resolve_run_file(token, EXPERIMENTS_RUNS_DIR)
         run = json.loads(run_path.read_text(encoding="utf-8"))
@@ -64,25 +62,19 @@ def main() -> int:
                 "Re-run with --eval-test or pass --allow-val explicitly."
             )
 
-        if bin_info is None:
-            bin_info = run["binning"]
-        elif bin_info["bin_id"] != run["binning"]["bin_id"]:
-            raise ValueError(
-                f"Cannot mix binning schemes in one slide promotion: "
-                f"{bin_info['bin_id']} vs {run['binning']['bin_id']}"
-            )
-
         promoted_metrics.append(
             {
-                "model": f"{run['model']['name']} ({run['features']['name']})",
+                "model": f"{run['model']['name']} ({run['features']['name']}, {run['target']['name']})",
                 "run_id": run["run_id"],
                 "split": split_tag,
-                "accuracy": metric_src["accuracy"],
-                "precision_macro": metric_src["precision_macro"],
-                "recall_macro": metric_src["recall_macro"],
-                "f1_macro": metric_src["f1_macro"],
-                "f1_weighted": metric_src["f1_weighted"],
-                "within_1_bin_acc": metric_src["within_1_bin_acc"],
+                "rmse": metric_src["rmse"],
+                "mae": metric_src["mae"],
+                "medae": metric_src["medae"],
+                "r2": metric_src["r2"],
+                "mape": metric_src["mape"],
+                "within_10pct": metric_src["within_10pct"],
+                "within_20pct": metric_src["within_20pct"],
+                "within_1ty": metric_src["within_1ty"],
             }
         )
 
@@ -91,13 +83,7 @@ def main() -> int:
     evaluation["test_metrics"] = promoted_metrics
     slide_export.update_results("evaluation", evaluation, path=SLIDES_RESULTS_PATH)
 
-    if bin_info is not None:
-        dataset = results.setdefault("dataset", {})
-        dataset["num_classes"] = bin_info["n_classes"]
-        dataset["class_names"] = bin_info["labels"]
-        slide_export.update_results("dataset", dataset, path=SLIDES_RESULTS_PATH)
-
-    print(f"Promoted {len(promoted_metrics)} run(s) -> {SLIDES_RESULTS_PATH}")
+    print(f"Promoted {len(promoted_metrics)} regression run(s) -> {SLIDES_RESULTS_PATH}")
     return 0
 
 

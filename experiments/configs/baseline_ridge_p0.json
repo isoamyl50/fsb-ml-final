@@ -1,14 +1,13 @@
 {
   "author": "baseline",
-  "binning": "fixed_3class",
+  "target": "raw",
   "features": "P0_numeric",
-  "model": "logreg",
+  "model": "ridge",
   "params": {
-    "C": 1.0,
-    "max_iter": 1000
+    "alpha": 10.0
   },
   "outlier_filter": false,
   "eval_test": false,
   "seed": 42,
-  "notes": "P0 raw numeric linear baseline"
+  "notes": "P0 raw numeric Ridge regression baseline"
 }

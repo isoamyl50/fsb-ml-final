@@ -1,11 +1,11 @@
-# Vietnam Housing Dataset 2024 — EDA Investigation & Modeling Recommendations
+# Vietnam Housing Dataset 2024 — EDA Investigation & Regression Recommendations
 
-> **Purpose:** Read this document before writing exploratory code or prompting AI agents on this dataset. Every statistic and benchmark below was computed directly on `data/raw/vietnam_housing_dataset.csv` to save duplicate exploration work and tokens.
+> **Purpose:** Read this document before writing exploratory code or prompting AI agents on this dataset. Every statistic below was computed directly on `data/raw/vietnam_housing_dataset.csv` to save duplicate exploration work and tokens.
 
 - **Source:** [House Price Prediction Dataset Vietnam - 2024 (Kaggle)](https://www.kaggle.com/datasets/nguyentiennhan/vietnam-housing-dataset-2024)
 - **Local File:** `data/raw/vietnam_housing_dataset.csv` (gitignored; `3,532,685` bytes)
 - **Dimensions:** `30,229` rows × `12` columns, `0` exact duplicate rows (`0.00%`)
-- **Task Conversion:** Reformulate continuous `Price` (billion VND) into multi-class price tiers via **fixed domain binning** for the final course project classification task.
+- **Task:** **Continuous House Price Prediction (Regression)** — predict listing `Price` in **billion VND** (`[1.00, 11.50]`).
 
 ---
 
@@ -35,85 +35,60 @@
 ## 2. Verified Data Quality Traps & Handling Rules
 
 1. **Do NOT use `df.dropna()`:**
-   - Only **`2,645` rows (`8.75%`)** have all 12 columns non-null.
-   - Even after dropping `House direction` and `Balcony direction`, only **`7,920` rows (`26.20%`)** remain complete.
-   - **Rule:** Impute numerical columns (train-only median or train-only district/city group median), add binary missingness indicator flags (`has_frontage`, `has_access_road`, etc.), and encode missing categoricals as `"Missing"` / `"Unknown"`. Evaluate dropping vs. keeping `Balcony direction` (82.65% missing) in preprocessing ablation.
+   - Only **`2,645` rows (`8.75%`)** have all 12 columns non-null; even dropping both direction columns leaves only **`7,920` rows (`26.20%`)**.
+   - **Rule:** Impute numerical columns (`Train`-only median or district-grouped median), add binary missingness indicator flags (`Frontage_missing`, `AccessRoad_missing`, etc.), and encode missing categoricals as `"Missing"`.
 2. **Vietnamese Unicode & Address Parsing Bugs:**
-   - Raw comma-splitting of `Address` yields **78** unique last tokens instead of 63 provinces due to:
-     - **NFD vs. NFC Unicode mismatch:** `'Hà Nội'` (`4` rows, decomposed diacritics) vs. `'Hà Nội'` (`10,457` rows). Always run `unicodedata.normalize("NFC", s)` first.
-     - **City aliases:** `'TP. HCM'` (`2` rows) vs. `'Hồ Chí Minh'` (`11,778` rows). Map aliases canonically.
-     - **Malformed short addresses:** `5` rows have $\le 2$ comma-separated parts (e.g., `'Đường số 11'`, `'Phòng công chứng Nguyễn Thị Thành'`). Parse right-to-left defensively and fall back to `"Unknown"`.
+   - Raw comma-splitting of `Address` yields **78** unique last tokens instead of 63 provinces due to NFD vs. NFC (`'Hà Nội'` × 4 vs. `'Hà Nội'` × 10,457), aliases (`'TP. HCM'` × 2 vs. `'Hồ Chí Minh'` × 11,778), and `5` malformed $\le 2$-part addresses.
+   - **Rule:** Always normalize with `unicodedata.normalize("NFC", s)`, map aliases canonically, and parse right-to-left defensively.
 3. **Domain Outliers:**
-   - `64` rows have `Frontage > Area` (impossible or unit-swapped dimensions).
-   - `61` rows have `Area < 15 m²` (`min=3.10 m²`); `216` rows have `Area > 300 m²` (`max=595.00 m²`).
-   - `11` rows exceed `400 triệu/m²` (up to `1,896.77 triệu/m²`), and `165` rows are `< 10 triệu/m²` (`min=2.11 triệu/m²`).
-   - **Rule:** Test a clean outlier-filtering or Winsorization variant against raw retention in preprocessing ablation (`pages/05-insights.md`). Note: when removing target-based `Price/m²` outliers, document clearly that absurd scraping errors (`< 10 triệu/m²` or `> 400 triệu/m²`) were removed as data cleaning, and ensure no `Price`-derived values ever enter features.
+   - `64` rows have `Frontage > Area`, `61` rows have `Area < 15 m²` (`min=3.10`), `216` rows have `Area > 300 m²` (`max=595.00`), `11` rows exceed `400 triệu/m²`, and `165` rows are `< 10 triệu/m²`.
+   - **Rule:** Test Train-only `--outlier-filter` cleanly as an ablation in `experiments/`; never filter `Val` or `Test` rows so metrics remain comparable.
 4. **Near-Duplicate Broker Reposts (Label Noise + Leakage Risk):**
-   - `1,631` groups (`4,004` rows) share exact `(Address, Area, Floors, Bedrooms, Bathrooms)`.
-   - `337` of those groups differ in `Price` by `> 0.5 tỷ VND`.
-   - **Rule:** Great talking point for Challenges / Error Analysis. Strongly consider grouping by `(Address, Area, Floors, Bedrooms, Bathrooms)` (or deduplicating) before splitting `Train`/`Val`/`Test` so reposts of the same house do not leak across splits.
+   - `1,631` groups (`4,004` rows) share exact `(Address, Area, Floors, Bedrooms, Bathrooms)`, and `337` groups differ in `Price` by `> 0.5 tỷ VND`.
+   - **Rule:** Use `experiments/splits/splits_v1.json` (`21,161` Train / `4,535` Val / `4,533` Test), built via 20-fold `StratifiedGroupKFold` on continuous price deciles + the broker-repost group key so reposts never leak across splits.
 
 ---
 
-## 3. Binning Strategy Comparison & Recommendation
+## 3. Target Formulations & Evaluation Metrics (`src/targets.py`, `src/evaluate.py`)
 
-All benchmarks below were measured on an **80/20 stratified split** (`random_state=42`) using two clean scikit-learn baselines:
-- **Numeric only:** `Area`, `Frontage`, `Access Road`, `Floors`, `Bedrooms`, `Bathrooms` (median imputed + scaled for LogisticRegression; raw NaNs for HistGradientBoostingClassifier).
-- **+Address/FE:** Above numerics + `log1p(Area)` + `Frontage`/`Access Road` missing flags + `is_project` / `is_alley` flags + top-20 `City`, top-120 `District`, `Legal status`, `Furniture state`, `House direction` (One-Hot Encoded).
+Because `Price` is pre-bounded `[1.00, 11.50]` (`skew=-0.03`), while `Area` is right-skewed (`skew=3.89`) and interacts multiplicatively with location ($\text{Price} \approx \text{Area} \times \text{Price}/\text{m}^2$), test **4 registered target transforms** (all inverted back to **billion VND** before scoring):
 
-| Binning Scheme | Cutoffs (tỷ VND) | Class Counts & Shares | LogReg (Num) Acc / Macro-F1 | HGB (Num) Acc / Macro-F1 | LogReg (+Addr/FE) Acc / Macro-F1 | HGB (+Addr/FE) Acc / Macro-F1 | HGB ±1 Bin Acc |
-|---|---|---|---:|---:|---:|---:|---:|
-| **3-class Fixed Domain *(Recommended)*** | `< 4` / `4–7` / `≥ 7` | `6,853` (22.67%) / `13,540` (44.79%) / `9,836` (32.54%) | 0.5131 / 0.4771 | 0.5834 / 0.5722 | 0.6968 / 0.7029 | **0.7345 / 0.7397** | **98.68%** |
-| **3-class Quantile** | `< 4.8` / `4.8–6.9` / `≥ 6.9` | `10,008` (33.11%) / `9,855` (32.60%) / `10,366` (34.29%) | 0.5002 / 0.4843 | 0.5665 / 0.5563 | 0.6588 / 0.6551 | 0.6947 / 0.6934 | 96.64% |
-| **4-class Fixed Domain** | `< 4` / `4–6` / `6–8` / `≥ 8` | `6,853` (22.67%) / `8,748` (28.94%) / `8,637` (28.57%) / `5,991` (19.82%) | 0.4072 / 0.3765 | 0.4719 / 0.4741 | 0.5769 / 0.5803 | 0.6313 / 0.6370 | 94.06% |
-| **4-class Quantile** *(dist. only)* | `< 4.2` / `4.2–5.9` / `5.9–7.5` / `≥ 7.5` | `7,422` (24.55%) / `7,634` (25.25%) / `6,928` (22.92%) / `8,245` (27.28%) | — | — | — | — | — |
-| **5-class Fixed** *(dist. only)* | `< 3` / `3–5` / `5–7` / `7–9` / `≥ 9` | `3,409` (11.28%) / `7,581` (25.08%) / `9,403` (31.11%) / `6,866` (22.71%) / `2,970` (9.83%) | — | — | — | — | — |
+- **`raw`** *(default)*: Predict `Price` directly in billion VND.
+- **`log1p`**: Train on `log1p(Price)`, invert with `expm1`.
+- **`price_per_m2`**: Train on clipped `Price * 1000 / Area` (million VND/$\text{m}^2$), invert via `pred_ppm2 * Area / 1000`.
+- **`log_price_per_m2`**: Train on `log(Price * 1000 / Area)`, invert via `exp(pred) * Area / 1000`.
 
-### Why **3-class Fixed Domain (`< 4` / `4–7` / `≥ 7` tỷ VND)** Is Recommended
-
-1. **+4.63 Macro-F1 higher than 3-class quantile (`0.7397` vs. `0.6934`):** Because `Price` is bell-shaped around `5.90` tỷ, quantile tertiles (`4.8` and `6.9` tỷ) slice straight through the densest cluster of listings (`[4, 7)` contains ~45.8% of all rows), maximizing boundary-flip noise. Fixed cuts `< 4` / `4–7` / `≥ 7` yield cleaner separation.
-2. **Zero target leakage:** Fixed domain cutoffs do not inspect the dataset distribution before splitting (if using quantile binning instead, compute quantiles on `Train` only).
-3. **Clear domain semantics for slides:**
-   - Class `0`: **Phổ thông (`< 4 tỷ`)**
-   - Class `1`: **Trung cấp (`4–7 tỷ`)**
-   - Class `2`: **Cao cấp (`≥ 7 tỷ`)**
-4. **Strong error narrative:** With `HGB (+Addr/FE)`, `98.68%` of predictions fall within ±1 adjacent bin (Test confusion matrix rows `[1021, 299, 51]`, `[216, 2040, 452]`, `[29, 558, 1380]`), showing errors concentrate tightly around adjacent price boundaries.
+**Unified Evaluation Metrics (all in billion VND):**
+- Primary ranking metric: **`RMSE`** (billion VND, lower is better)
+- Secondary metrics: **`MAE`**, **`MedAE`**, **`R²`**, **`MAPE (%)`**, plus practical error-tolerance accuracies **`±10%`**, **`±20%`**, **`±1 tỷ`**.
 
 ---
 
-## 4. Feature Engineering & Leakage Guardrails
+## 4. Feature Engineering & Leakage Guardrails (`src/features.py`)
 
-### Already Validated High-Impact Features (+16.8 to +22.6 Macro-F1 Gain)
-- Canonical NFC-normalized `City` and `(District, City)` extracted from `Address`.
-- Address keyword indicators: `is_project` (`dự án`, `kđt`, `vinhomes`, etc.) and `is_alley` (`ngõ`, `hẻm`, `ngách`).
-- Binary missingness flags (`Frontage_missing`, `Access Road_missing`, `Furniture_missing`, `Direction_missing`).
-- `log1p(Area)` for heavy right skew (`3.89`) and linear baseline performance.
+Progressive recipes (all fit strictly on `Train`):
+- **`P0_numeric`**: 6 raw numerics (`Area`, `Frontage`, `Access Road`, `Floors`, `Bedrooms`, `Bathrooms`).
+- **`P1_location`**: `P0` + NFC-normalized `city`, `district`, `ward` & raw categoricals (OHE).
+- **`P2_domain`**: `P1` + district-grouped median imputation, missingness flags, `is_project`/`is_alley`, `log1p` transforms (`Area`, `Frontage`, `Access Road`, `usable_area`), structural ratios (`Area/Floors`, `Total_Rooms`, `Area/Bedrooms`, `Frontage/AccessRoad`), and `n_missing_fields`.
+- **`P3_tfidf_te`**: `P2` + 5-fold OOF hierarchical continuous Target Encoding (`city`, `district`, `ward`, `street` mean `Price`) + TF-IDF + `TruncatedSVD(20)` on `Address`.
+- **`P4_geo_priors`**: `P3` + 5-fold OOF hierarchical `Price/m²` priors (`city → district → ward → street`) + multiplicative `Area × oof_ppm2` priors + `log1p` frequencies + 5-fold OOF TF-IDF Ridge text predictions (`addr_ridge_price`, `addr_ridge_ppm2`).
+- **`P4_compact`**: Dense subset of `P4_geo_priors` dropping sparse `district_*` / `ward_*` OHE columns.
 
-### High-Leverage Next Features to Try
-- `Ward` and `Street` extracted from `Address` using **out-of-fold / Train-only Target Encoding** or **Frequency Encoding**.
-- TF-IDF + TruncatedSVD (`10`–`20` components, fit on `Train` only) on `Address` to capture micro-location signals (major streets, urban developments).
-- Domain structural ratios (watch `0`/NaN division): `Area / Floors` (estimated footprint), `Bedrooms + Bathrooms`, `Area / Bedrooms`, `Frontage / Access Road`.
-- Train-only group-median imputation for `Frontage` and `Access Road` grouped by `(District, City)`.
-
-### Strict Non-Leakage Rules
-- **NEVER** include `Price`, `Price / Area`, `log(Price)`, or any price-derived statistic as an input feature.
-- Fit all imputers, scalers, One-Hot / Target / Frequency encoders, TF-IDF vectorizers, and SVD reducers strictly on `Train` (`fit_transform(X_train)`, `transform(X_val)`, `transform(X_test)`).
+**Strict Non-Leakage Rule:** NEVER use `Price`, `Price / Area`, or any target-derived value inside `transform(rows)` or as raw input features.
 
 ---
 
 ## 5. Recommended Model Lineup & Slide Handoff
 
-To score strongly on **Model Selection & Implementation (30%)** and **Performance Analysis (20%)**:
+Compare diverse regression families on `Val RMSE` / `MAE` / `R²` (`src/models.py`):
+1. **Linear Baselines:** `ridge`, `lasso` (clearly shows `P0 → P4` progression).
+2. **Bagging & Boosting Trees:** `rf`, `et`, `hgb`, `lgbm`, `xgb`, `catboost` (plus `blend_trees`).
+3. **PyTorch Tabular Neural Network (`mlp`):** Residual/BatchNorm + SiLU + Dropout MLP trained with `SmoothL1Loss` or `MSELoss`, `AdamW`, `CosineAnnealingLR`, and `EarlyStopping` (also supplies per-epoch `training_curves.png` for Slide 7).
 
-1. **Model 1 — Multinomial Logistic Regression** *(Linear Baseline)*: Fast, interpretable weights; demonstrates huge jump from numeric-only (`0.477` F1) to engineered location features (`0.703+` F1).
-2. **Model 2 — Gradient Boosted Trees** (`HistGradientBoostingClassifier` / `XGBoost` / `LightGBM` / `CatBoost`): Strongest tabular learner for non-linear `Area × District` interactions and missing values.
-3. **Model 3 — PyTorch Tabular MLP**: Deep learning architecture (`Linear → BatchNorm1d → ReLU → Dropout` blocks + optional entity embeddings for `City`/`District`, `CrossEntropyLoss` with optional class weights, `AdamW`, `EarlyStopping`) — fulfills the course deep learning focus and produces clean per-epoch **Train/Val Loss & Accuracy curves** (`training_curves.png`) for Slide 7.
-
-### Required Artifacts for `slides/`
-Use `slides/scripts/slide_export.py` from your training notebook to populate `slides/public/figures/` and `slides/data/results.json`:
-1. `class_distribution.png` — Bar chart of the 3 price tiers (Slide 3)
-2. `dataset_samples.png` — Visual summary / EDA distributions by tier & city (Slide 3)
-3. `training_curves.png` — Train/Val Loss & Accuracy curves for PyTorch MLP / iterative boosting (Slide 7)
-4. `confusion_matrices.png` — Side-by-side Confusion Matrices for the compared models (Slide 8)
-5. `error_analysis.png` — Per-class F1 comparison + sample misclassified boundary cases (Slide 9)
-6. `preprocessing_impact.png` — Before/after ablation bar chart: Numeric-only vs. +Address/FE (+ imputation/outlier cleaning) (Slide 10)
+**6 Slidev Figures (`slides/public/figures/` via `slides/scripts/slide_export.py`):**
+1. `price_distribution.png` — Histogram & box/violin of `Price` (and `Price/m²`) overall and across Train/Val/Test (Slide 3)
+2. `dataset_samples.png` — Price vs. Area / top cities EDA relationships (Slide 3)
+3. `training_curves.png` — PyTorch MLP Train/Val Loss & RMSE per epoch (+ boosting validation curves) (Slide 7)
+4. `pred_vs_actual.png` — Predicted vs. Actual `Price` scatter with $y=x$ and $\pm 1$ tỷ / $\pm 20\%$ bands (Slide 8)
+5. `residual_analysis.png` — Residual distribution (`y_pred - y_true`), error by price tier / city, and top permutation importances (Slide 9)
+6. `preprocessing_impact.png` — `P0 → P4` RMSE & $R^2$ progression bar chart (Slide 10)

@@ -1,15 +1,12 @@
-"""Preprocessing helpers: Vietnamese text normalization, address parsing, binning, and splits."""
+"""Preprocessing helpers: Vietnamese text normalization, address parsing, and outlier bounds."""
 
 from __future__ import annotations
 
 import re
 import unicodedata
-from typing import Any, Sequence
+from typing import Any
 
 import numpy as np
-from sklearn.model_selection import StratifiedGroupKFold, train_test_split
-
-from .config import PRICE_BIN_EDGES, RANDOM_SEED, SPLIT_RATIOS
 
 CITY_ALIASES = {
     "TP. HCM": "Hồ Chí Minh",
@@ -68,15 +65,6 @@ def parse_address(address: str | None) -> dict[str, Any]:
     }
 
 
-def bin_price(
-    prices: Sequence[float] | np.ndarray,
-    edges: Sequence[float] = PRICE_BIN_EDGES,
-) -> np.ndarray:
-    """Convert continuous prices (billion VND) into discrete class IDs [0..K-1]."""
-    arr = np.asarray(prices, dtype=float)
-    return np.digitize(arr, bins=list(edges), right=False)
-
-
 def is_valid_domain_row(
     area: float,
     price: float,
@@ -95,50 +83,3 @@ def is_valid_domain_row(
         return False
     ppm2 = (price * 1000.0) / area
     return min_ppm2 <= ppm2 <= max_ppm2
-
-
-def stratified_train_val_test_split(
-    y: Sequence[int] | np.ndarray,
-    split_ratios: tuple[float, float, float] = SPLIT_RATIOS,
-    random_state: int = RANDOM_SEED,
-    groups: Sequence[Any] | None = None,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Return stratified (and optionally group-aware) train/val/test row indices."""
-    train_ratio, val_ratio, test_ratio = split_ratios
-    if not np.isclose(train_ratio + val_ratio + test_ratio, 1.0):
-        raise ValueError("split_ratios must sum to 1.0")
-
-    y_arr = np.asarray(y)
-    n_samples = len(y_arr)
-    all_idx = np.arange(n_samples)
-
-    if groups is None:
-        holdout_ratio = val_ratio + test_ratio
-        train_idx, temp_idx = train_test_split(
-            all_idx,
-            test_size=holdout_ratio,
-            random_state=random_state,
-            stratify=y_arr,
-        )
-        rel_test = test_ratio / holdout_ratio
-        val_idx, test_idx = train_test_split(
-            temp_idx,
-            test_size=rel_test,
-            random_state=random_state,
-            stratify=y_arr[temp_idx],
-        )
-        return train_idx, val_idx, test_idx
-
-    # Group-aware split keeps near-duplicate broker reposts within a single split
-    groups_arr = np.asarray(groups)
-    n_splits_outer = max(2, round(1.0 / (val_ratio + test_ratio)))
-    sgkf_outer = StratifiedGroupKFold(
-        n_splits=n_splits_outer, shuffle=True, random_state=random_state
-    )
-    train_idx, temp_idx = next(sgkf_outer.split(all_idx, y_arr, groups_arr))
-
-    sgkf_inner = StratifiedGroupKFold(n_splits=2, shuffle=True, random_state=random_state)
-    val_rel, test_rel = next(
-        sgkf_inner.split(temp_idx, y_arr[temp_idx], groups_arr[temp_idx])
-    )
-    return train_idx, temp_idx[val_rel], temp_idx[test_rel]

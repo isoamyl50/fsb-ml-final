@@ -1,0 +1,18 @@
+{
+  "author": "baseline",
+  "target": "raw",
+  "features": "P4_geo_priors",
+  "model": "hgb",
+  "params": {
+    "max_iter": 400,
+    "learning_rate": 0.04,
+    "max_leaf_nodes": 63,
+    "min_samples_leaf": 25,
+    "l2_regularization": 2.0,
+    "max_features": 0.4
+  },
+  "outlier_filter": false,
+  "eval_test": false,
+  "seed": 42,
+  "notes": "P4 location/ppm2 priors + OOF text Ridge with HistGradientBoostingRegressor"
+}
