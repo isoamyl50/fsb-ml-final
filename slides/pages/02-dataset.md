@@ -11,15 +11,15 @@
 
 <div class="grid grid-cols-2 gap-4 items-start">
   <FigureSlot
+    src="/figures/price_distribution.png"
     expectedFile="public/figures/price_distribution.png"
     caption="Hình 1: Phân bố giá bán (tỷ VND) và đơn giá theo m²"
-    hint="Biểu đồ phân bố Price (gần đối xứng quanh 5.9 tỷ) và Price/m² lệch phải."
     maxHeight="230px"
   />
   <FigureSlot
+    src="/figures/dataset_samples.png"
     expectedFile="public/figures/dataset_samples.png"
     caption="Hình 2: Tương quan Diện tích, Thành phố &amp; Giá bán"
-    hint="Scatter/Boxplot thể hiện chênh lệch giá giữa TP.HCM, Hà Nội và các tỉnh."
     maxHeight="230px"
   />
 </div>
@@ -54,7 +54,7 @@ flowchart LR
     <ul class="text-xs mb-0">
       <li><strong>Không dùng <code>dropna()</code>:</strong> Chỉ còn 8.75% dữ liệu nếu xóa NaN; thay bằng <strong>Train-only median imputation</strong> + cờ báo thiếu.</li>
       <li><strong>Chuẩn hóa tiếng Việt:</strong> Unicode NFC gộp lỗi dấu (<code>Hà Nội</code>) và gộp alias (<code>TP. HCM</code> → <code>Hồ Chí Minh</code>).</li>
-      <li><strong>Group-Stratified Split:</strong> Gom 1,631 nhóm tin đăng lại cùng nhà về cùng một tập, phân tầng theo 10 mức giá.</li>
+      <li><strong>Group-Stratified Split:</strong> Gom 1,708 cụm tin đăng lặp (4,189 tin) cùng khóa BĐS về cùng một tập, phân tầng theo 10 mức giá.</li>
     </ul>
   </div>
 
@@ -63,7 +63,7 @@ flowchart LR
     <ul class="text-xs mb-0">
       <li><strong>Đặc trưng cấu trúc:</strong> <code>log1p(Area)</code>, <code>Area × Floors</code>, <code>Area/Floor</code>, <code>Total_Rooms</code>, từ khóa <code>is_project</code> / <code>is_alley</code>.</li>
       <li><strong>OOF Geo &amp; Văn bản:</strong> 5-fold OOF <code>Price/m²</code> theo cấp <code>City → District → Ward → Street</code> + <code>Ridge TF-IDF</code> trên địa chỉ.</li>
-      <li><strong>Thử nghiệm Target:</strong> Đối chiếu <code>raw</code>, <code>log1p</code>, <code>price_per_m2</code> và quy đổi về tỷ VND.</li>
+      <li><strong>Thử nghiệm Target:</strong> Đối chiếu trực tiếp <code>raw</code> (thắng trên Val RMSE) với <code>log1p</code> và <code>price_per_m2</code> (quy đổi về tỷ VND).</li>
     </ul>
   </div>
 </div>
@@ -71,5 +71,5 @@ flowchart LR
 <!--
 [1:35 – 2:15 | ~40s]
 - Vì dropna() làm mất tới 91% dữ liệu, nhóm giữ toàn bộ mẫu bằng cách điền khuyết trung vị theo quận/huyện chỉ fit trên tập Train và bổ sung biến cờ báo thiếu.
-- Nhóm cũng sửa lỗi Unicode tiếng Việt và dùng Group-Stratified Split để tin đăng lặp của môi giới không bị rò rỉ từ Train sang Test.
+- Nhóm cũng sửa lỗi Unicode tiếng Việt và dùng Group-Stratified Split (1,708 cụm tin lặp) để tin đăng môi giới không bị rò rỉ từ Train sang Test.
 -->

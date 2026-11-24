@@ -25,100 +25,403 @@
       "Imputation theo trung vị nhóm District trên Train + cờ thiếu dữ liệu",
       "Biến đổi log1p(Area), tỉ lệ cấu trúc, OOF Target Encoding & OOF Price/m² priors"
     ],
-    "target_transform": "raw / log1p / price_per_m2 / log_price_per_m2 (quy đổi về tỷ VND)",
+    "target_transform": "raw (thắng trên Val RMSE); thử nghiệm đối chứng log1p & price_per_m2",
     "ablation": [
       {
-        "variant": "P0_numeric (6 biến số gốc)",
-        "model": "[TODO: Tên model]",
-        "rmse": null,
-        "r2": null,
-        "notes": "[TODO]"
+        "variant": "P0_numeric (6 biến số)",
+        "model": "linear_sgd / mlp",
+        "rmse": 1.8541,
+        "r2": 0.3006,
+        "notes": "Linear SGD=1.9956 | MLP=1.8541"
       },
       {
-        "variant": "P4_geo_priors (Location + OOF Priors + Text)",
-        "model": "[TODO: Tên model]",
-        "rmse": null,
-        "r2": null,
-        "notes": "[TODO]"
+        "variant": "P2_domain (Impute+Tỉ lệ)",
+        "model": "linear_sgd / mlp",
+        "rmse": 1.3151,
+        "r2": 0.6481,
+        "notes": "Linear SGD=1.4210 | MLP=1.3151"
+      },
+      {
+        "variant": "P4_compact (103 cột dày)",
+        "model": "linear_sgd / mlp",
+        "rmse": 1.2173,
+        "r2": 0.6985,
+        "notes": "Linear SGD=1.2931 | MLP=1.2173"
+      },
+      {
+        "variant": "P4_geo_priors (345 cột)",
+        "model": "linear_sgd / mlp",
+        "rmse": 1.2123,
+        "r2": 0.701,
+        "notes": "Linear SGD=1.2830 | MLP=1.2123 (Full tốt nhất)"
       }
     ]
   },
   "models": [
     {
-      "name": "[TODO: Mô hình 1 (Baseline)]",
-      "role": "Baseline",
-      "architecture": "[TODO: Ridge / Lasso Regression]",
-      "rationale": "[TODO: Làm mốc chuẩn tuyến tính, dễ diễn giải tác động tiền xử lý]",
-      "params_count": "[TODO]",
+      "name": "Linear Regression (Mini-batch SGD)",
+      "role": "Baseline Tuyến tính (Hướng 1)",
+      "architecture": "Input(345) -> Linear(1)",
+      "rationale": "Mốc chuẩn tuyến tính dễ giải thích từ gradient MSE; đo rõ đóng góp của phi tuyến trong MLP.",
+      "params_count": "346",
       "training_setup": {
-        "loss": "Squared Error (L2)",
-        "optimizer": "Closed-form / L-BFGS",
-        "lr": "N/A",
-        "batch_size": null,
-        "epochs": null,
-        "regularization": "[TODO: alpha=10.0]",
-        "train_time": "[TODO]"
+        "loss": "MSELoss",
+        "optimizer": "Mini-batch SGD",
+        "lr": "0.01",
+        "batch_size": 128,
+        "epochs": "72/92 (max 200)",
+        "regularization": "Early Stopping (patience=20), grad_clip=5.0",
+        "train_time": "35.41s (Tesla T4)"
       },
       "strengths": [
-        "[TODO]"
+        "Trực quan, tốc độ nhanh, không overfit (khoảng cách Train–Val rất nhỏ)."
       ],
       "weaknesses": [
-        "[TODO]"
+        "Bỏ qua tương tác phi tuyến Diện tích × Khu vực (Test RMSE 1.2936)."
       ]
     },
     {
-      "name": "[TODO: Mô hình 2 (Nâng cao)]",
-      "role": "Primary",
-      "architecture": "[TODO: HGB / LightGBM / XGBoost / CatBoost / PyTorch MLP]",
-      "rationale": "[TODO: Nắm bắt tương tác phi tuyến Diện tích × Khu vực]",
-      "params_count": "[TODO]",
+      "name": "MLP (Backpropagation + Adam)",
+      "role": "Mô hình Chính Đề xuất (Hướng 2)",
+      "architecture": "Input(345) -> Dense(128) + ReLU + Dropout(0.1) -> Linear(1)",
+      "rationale": "Học biểu diễn phi tuyến mượt nhờ tầng ẩn ReLU và cập nhật thích nghi Adam.",
+      "params_count": "44417",
       "training_setup": {
-        "loss": "RMSE / SmoothL1Loss",
-        "optimizer": "[TODO: Tree Boosting / AdamW]",
-        "lr": "[TODO]",
-        "batch_size": null,
-        "epochs": null,
-        "regularization": "[TODO: L2 reg, colsample, Dropout, Early Stopping]",
-        "train_time": "[TODO]"
+        "loss": "MSELoss",
+        "optimizer": "Adam",
+        "lr": "0.001",
+        "batch_size": 256,
+        "epochs": "28/43 (max 150)",
+        "regularization": "Dropout=0.1, Weight Decay=1e-4, Early Stopping (patience=15)",
+        "train_time": "13.23s (Tesla T4)"
       },
       "strengths": [
-        "[TODO]"
+        "Giảm 0.0636 tỷ RMSE so với Linear SGD trên Test (1.2936 → 1.2300).",
+        "Ổn định qua 3 seeds (42, 123, 2026): Val RMSE = 1.2079 ± 0.0032."
       ],
       "weaknesses": [
-        "[TODO]"
+        "Cần chuẩn hóa đặc trưng và Early Stopping sớm (ep 28) để tránh học vẹt trên 345 chiều."
+      ]
+    },
+    {
+      "name": "HistGradientBoosting & Random Forest",
+      "role": "Mốc Tham chiếu Cây Bên ngoài",
+      "architecture": "Tree Boosting / Bagging trên P4_geo_priors",
+      "rationale": "Mốc chuẩn cây quyết định ngoài phạm vi giải tay để đối chiếu khoảng cách độ chính xác với MLP.",
+      "params_count": "Tree ensembles",
+      "training_setup": {
+        "loss": "Squared Error",
+        "optimizer": "Gradient Boosting / Bagging",
+        "lr": "0.04 (HGB)",
+        "batch_size": null,
+        "epochs": "max_iter=400 / n_estimators=400",
+        "regularization": "l2_reg=2.0, max_features=0.4 / sqrt",
+        "train_time": "25.30s / 33.17s"
+      },
+      "strengths": [
+        "Test RMSE thấp nhất (HGB 1.1955; RF 1.2026), tự xử lý NaN và tách ngưỡng."
+      ],
+      "weaknesses": [
+        "Khó giải thích hơn MLP/Linear từ góc độ giải tích gradient môn học."
       ]
     }
   ],
   "evaluation": {
     "test_metrics": [
       {
-        "model": "[TODO: Mô hình 1]",
-        "rmse": null,
-        "mae": null,
-        "medae": null,
-        "r2": null,
-        "mape": null,
-        "within_10pct": null,
-        "within_20pct": null,
-        "within_1ty": null
+        "model": "linear_sgd (P4_geo_priors, raw)",
+        "run_id": "20261123_162607_final_locked_linear_sgd_raw_p4_geo_priors_720b",
+        "split": "test",
+        "rmse": 1.2936,
+        "mae": 0.9698,
+        "medae": 0.7558,
+        "r2": 0.6566,
+        "mape": 19.92,
+        "within_10pct": 0.392,
+        "within_20pct": 0.6693,
+        "within_1ty": 0.6267
       },
       {
-        "model": "[TODO: Mô hình 2]",
-        "rmse": null,
-        "mae": null,
-        "medae": null,
-        "r2": null,
-        "mape": null,
-        "within_10pct": null,
-        "within_20pct": null,
-        "within_1ty": null
+        "model": "mlp (P4_geo_priors, raw)",
+        "run_id": "20261123_162634_final_locked_mlp_raw_p4_geo_priors_0653",
+        "split": "test",
+        "rmse": 1.23,
+        "mae": 0.8987,
+        "medae": 0.669,
+        "r2": 0.6896,
+        "mape": 17.72,
+        "within_10pct": 0.4278,
+        "within_20pct": 0.7106,
+        "within_1ty": 0.6682
+      },
+      {
+        "model": "hgb (P4_geo_priors, raw)",
+        "run_id": "20261123_162714_final_locked_hgb_raw_p4_geo_priors_32fb",
+        "split": "test",
+        "rmse": 1.1955,
+        "mae": 0.8581,
+        "medae": 0.5994,
+        "r2": 0.7067,
+        "mape": 16.89,
+        "within_10pct": 0.4604,
+        "within_20pct": 0.726,
+        "within_1ty": 0.6878
+      },
+      {
+        "model": "rf (P4_geo_priors, raw)",
+        "run_id": "20261123_163322_final_locked_rf_raw_p4_geo_priors_50ff",
+        "split": "test",
+        "rmse": 1.2026,
+        "mae": 0.8561,
+        "medae": 0.5966,
+        "r2": 0.7032,
+        "mape": 17.51,
+        "within_10pct": 0.4789,
+        "within_20pct": 0.7309,
+        "within_1ty": 0.6925
       }
     ],
-    "segment_report": {},
+    "segment_report": {
+      "mlp": [
+        {
+          "segment": "Giá thấp (< 4 tỷ)",
+          "count": 1019,
+          "rmse": 1.1715,
+          "mae": 0.7952,
+          "medae": 0.5149,
+          "r2": -1.3282,
+          "mape": 30.67,
+          "within_10pct": 0.2964,
+          "within_20pct": 0.5329,
+          "within_1ty": 0.737
+        },
+        {
+          "segment": "Giá trung bình (4–7 tỷ)",
+          "count": 2035,
+          "rmse": 1.0234,
+          "mae": 0.7894,
+          "medae": 0.6327,
+          "r2": -0.4607,
+          "mape": 14.68,
+          "within_10pct": 0.4486,
+          "within_20pct": 0.7396,
+          "within_1ty": 0.7042
+        },
+        {
+          "segment": "Giá cao (≥ 7 tỷ)",
+          "count": 1479,
+          "rmse": 1.5,
+          "mae": 1.1205,
+          "medae": 0.8372,
+          "r2": -1.7172,
+          "mape": 12.99,
+          "within_10pct": 0.4895,
+          "within_20pct": 0.7931,
+          "within_1ty": 0.5713
+        },
+        {
+          "segment": "TP. Hồ Chí Minh",
+          "count": 1759,
+          "rmse": 1.179,
+          "mae": 0.8675,
+          "medae": 0.6382,
+          "r2": 0.6812,
+          "mape": 15.85,
+          "within_10pct": 0.4719,
+          "within_20pct": 0.7572,
+          "within_1ty": 0.689
+        },
+        {
+          "segment": "Hà Nội",
+          "count": 1583,
+          "rmse": 1.2171,
+          "mae": 0.9124,
+          "medae": 0.7114,
+          "r2": 0.6279,
+          "mape": 16.3,
+          "within_10pct": 0.4321,
+          "within_20pct": 0.7296,
+          "within_1ty": 0.6456
+        },
+        {
+          "segment": "Tỉnh/TP khác",
+          "count": 1191,
+          "rmse": 1.3175,
+          "mae": 0.9268,
+          "medae": 0.6693,
+          "r2": 0.6815,
+          "mape": 22.38,
+          "within_10pct": 0.3568,
+          "within_20pct": 0.6163,
+          "within_1ty": 0.6675
+        }
+      ],
+      "linear_sgd": [
+        {
+          "segment": "Giá thấp (< 4 tỷ)",
+          "count": 1019,
+          "rmse": 1.3562,
+          "mae": 0.9959,
+          "medae": 0.7537,
+          "r2": -2.1201,
+          "mape": 38.62,
+          "within_10pct": 0.2296,
+          "within_20pct": 0.3896,
+          "within_1ty": 0.6251
+        },
+        {
+          "segment": "Giá trung bình (4–7 tỷ)",
+          "count": 2035,
+          "rmse": 1.0402,
+          "mae": 0.8036,
+          "medae": 0.6508,
+          "r2": -0.5089,
+          "mape": 15.09,
+          "within_10pct": 0.4378,
+          "within_20pct": 0.7317,
+          "within_1ty": 0.6988
+        },
+        {
+          "segment": "Giá cao (≥ 7 tỷ)",
+          "count": 1479,
+          "rmse": 1.5403,
+          "mae": 1.1804,
+          "medae": 0.9394,
+          "r2": -1.8655,
+          "mape": 13.67,
+          "within_10pct": 0.4408,
+          "within_20pct": 0.7762,
+          "within_1ty": 0.5287
+        },
+        {
+          "segment": "TP. Hồ Chí Minh",
+          "count": 1759,
+          "rmse": 1.2207,
+          "mae": 0.9214,
+          "medae": 0.7042,
+          "r2": 0.6582,
+          "mape": 17.58,
+          "within_10pct": 0.4412,
+          "within_20pct": 0.7243,
+          "within_1ty": 0.6492
+        },
+        {
+          "segment": "Hà Nội",
+          "count": 1583,
+          "rmse": 1.2439,
+          "mae": 0.9523,
+          "medae": 0.7705,
+          "r2": 0.6114,
+          "mape": 17.4,
+          "within_10pct": 0.3973,
+          "within_20pct": 0.7031,
+          "within_1ty": 0.6241
+        },
+        {
+          "segment": "Tỉnh/TP khác",
+          "count": 1191,
+          "rmse": 1.453,
+          "mae": 1.0644,
+          "medae": 0.8188,
+          "r2": 0.6126,
+          "mape": 26.71,
+          "within_10pct": 0.3123,
+          "within_20pct": 0.5432,
+          "within_1ty": 0.597
+        }
+      ],
+      "hgb": [
+        {
+          "segment": "Giá thấp (< 4 tỷ)",
+          "count": 1019,
+          "rmse": 1.1309,
+          "mae": 0.7558,
+          "medae": 0.4779,
+          "r2": -1.1694,
+          "mape": 29.13,
+          "within_10pct": 0.3278,
+          "within_20pct": 0.5407,
+          "within_1ty": 0.7566
+        },
+        {
+          "segment": "Giá trung bình (4–7 tỷ)",
+          "count": 2035,
+          "rmse": 0.9916,
+          "mae": 0.7542,
+          "medae": 0.5767,
+          "r2": -0.3713,
+          "mape": 14.02,
+          "within_10pct": 0.4875,
+          "within_20pct": 0.7641,
+          "within_1ty": 0.7258
+        },
+        {
+          "segment": "Giá cao (≥ 7 tỷ)",
+          "count": 1479,
+          "rmse": 1.4649,
+          "mae": 1.0717,
+          "medae": 0.7897,
+          "r2": -1.5918,
+          "mape": 12.42,
+          "within_10pct": 0.5145,
+          "within_20pct": 0.8012,
+          "within_1ty": 0.5882
+        },
+        {
+          "segment": "TP. Hồ Chí Minh",
+          "count": 1759,
+          "rmse": 1.1405,
+          "mae": 0.8288,
+          "medae": 0.5876,
+          "r2": 0.7017,
+          "mape": 15.26,
+          "within_10pct": 0.5082,
+          "within_20pct": 0.7669,
+          "within_1ty": 0.6947
+        },
+        {
+          "segment": "Hà Nội",
+          "count": 1583,
+          "rmse": 1.1838,
+          "mae": 0.8727,
+          "medae": 0.6398,
+          "r2": 0.6481,
+          "mape": 15.69,
+          "within_10pct": 0.4548,
+          "within_20pct": 0.7505,
+          "within_1ty": 0.6822
+        },
+        {
+          "segment": "Tỉnh/TP khác",
+          "count": 1191,
+          "rmse": 1.2868,
+          "mae": 0.8821,
+          "medae": 0.5681,
+          "r2": 0.6962,
+          "mape": 20.91,
+          "within_10pct": 0.3971,
+          "within_20pct": 0.6331,
+          "within_1ty": 0.6851
+        }
+      ]
+    },
     "error_patterns": [
-      "[TODO: Phân khúc/khu vực có sai số lớn nhất và nguyên nhân]"
+      "Phân khúc ≥ 7 tỷ có RMSE tuyệt đối lớn nhất (1.500 tỷ trên MLP) do thiếu tiện ích vi mô/nội thất cao cấp, dù MAPE thấp (12.99%).",
+      "Phân khúc < 4 tỷ có MAPE cao nhất (30.67% MLP; 38.62% Linear SGD) do mẫu số giá nhỏ và tỷ lệ thiếu Mặt tiền/Đường vào ở các tỉnh lẻ.",
+      "Ngoài TP.HCM (RMSE 1.179) và Hà Nội (1.217), khu vực Tỉnh/TP khác chênh lệch mạnh giữa MLP (1.318) và Linear SGD (1.453)."
     ],
-    "training_notes": "[TODO: Nhận xét đường cong Loss/RMSE và hiện tượng overfitting]"
+    "training_notes": "Adam giúp MLP hội tụ nhanh (Val RMSE thấp nhất 1.2042 ở epoch 28, sớm hơn nhiều so với SGD epoch 72 — 1.2816). Sau epoch 28, Train MSE của MLP tiếp tục giảm xuống 1.185 trong khi Val MSE chững quanh 1.45, khẳng định vai trò quyết định của Early Stopping (patience=15).",
+    "multiseed_mlp": {
+      "seeds": [
+        42,
+        123,
+        2026
+      ],
+      "val_rmse_mean": 1.2079,
+      "val_rmse_std": 0.0032,
+      "val_r2_mean": 0.7032,
+      "val_r2_std": 0.0016
+    }
   },
   "challenges": [
     {
@@ -126,35 +429,37 @@
       "solution": "Không dùng dropna() (chỉ còn 8.75%); dùng Train-only median imputation + cờ báo thiếu"
     },
     {
-      "problem": "Nhiễu Unicode NFD/NFC & tin đăng trùng lặp của môi giới (1,631 nhóm)",
+      "problem": "Nhiễu Unicode NFD/NFC & tin đăng trùng lặp của môi giới (1,708 cụm)",
       "solution": "Chuẩn hóa Unicode NFC, map tên tỉnh thành chuẩn và dùng Group-Stratified Split"
     }
   ],
   "course_reflections": [
     {
-      "concept": "Bias – Variance Trade-off",
-      "application": "[TODO: Đối chiếu mô hình tuyến tính vs Tree/MLP và vai trò feature subsampling]"
+      "concept": "Bias – Variance Trade-off & Regularization",
+      "application": "Linear SGD bị high bias (Val RMSE 1.2816); thêm 1 tầng ẩn 128 ReLU giảm bias rõ rệt, trong khi 2 tầng (128,64)+BN sớm overfit (ep 9–10). Dropout 0.1 + L2 1e-4 + Early Stopping giữ ổn định giữa 3 seeds (1.2079 ± 0.0032)."
     },
     {
       "concept": "Data Leakage & Kỷ luật Pipeline",
-      "application": "[TODO: OOF Target Encoding, Group-Stratified Split tránh rò rỉ dữ liệu]"
+      "application": "StratifiedGroupKFold trên 1,708 cụm tin đăng lặp (4,189 tin), imputer/scaler fit riêng trên Train và 5-fold OOF Target Encoding + TF-IDF giúp Feature Engineering P0→P4 giảm 34.6–35.7% RMSE mà không rò rỉ Test."
     }
   ],
   "conclusions": {
-    "recommended_model": "[TODO: Tên mô hình tốt nhất]",
+    "recommended_model": "MLP (1 tầng ẩn 128 ReLU, Adam, Dropout=0.1, P4_geo_priors)",
     "key_takeaways": [
-      "[TODO: Kết luận chính 1]"
+      "Feature Engineering (P0→P4) đóng góp mức giảm sai số áp đảo (~0.64–0.71 tỷ RMSE, ~35%), vượt xa tinh chỉnh siêu tham số thuần túy.",
+      "Trong nhóm mô hình gradient-based môn học, MLP + Adam đạt Test RMSE = 1.2300 tỷ, R² = 0.6896, vượt trội Linear SGD (1.2936 tỷ) và thu hẹp khoảng cách còn 0.0345 tỷ so với HGB tham chiếu (1.1955 tỷ)."
     ],
     "future_work": [
-      "[TODO: Hướng phát triển tiếp theo]"
+      "Bổ sung tọa độ bản đồ (lat/lon) và PhoBERT embedding trên Address/mô tả chi tiết để giảm sai số ở phân khúc nhà ≥ 7 tỷ.",
+      "Dự đoán khoảng tin cậy giá (Quantile Regression / Conformal Prediction) thay vì chỉ một điểm dự đoán."
     ]
   },
   "figures": {
-    "price_distribution": "",
-    "dataset_samples": "",
-    "training_curves": "",
-    "pred_vs_actual": "",
-    "residual_analysis": "",
-    "preprocessing_impact": ""
+    "price_distribution": "/figures/price_distribution.png",
+    "dataset_samples": "/figures/dataset_samples.png",
+    "training_curves": "/figures/training_curves.png",
+    "pred_vs_actual": "/figures/pred_vs_actual.png",
+    "residual_analysis": "/figures/residual_analysis.png",
+    "preprocessing_impact": "/figures/preprocessing_impact.png"
   }
 }

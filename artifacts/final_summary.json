@@ -1,0 +1,3309 @@
+{
+  "environment": {
+    "python": "3.13.16",
+    "torch": "2.14.1+cu130",
+    "cuda": true,
+    "gpu": "Tesla T4",
+    "total_suite_seconds": 1505.49
+  },
+  "best_features": {
+    "linear_sgd": "P4_geo_priors",
+    "mlp": "P4_geo_priors"
+  },
+  "ablation": {
+    "linear_sgd": {
+      "P0_numeric": {
+        "tag": "ABL_LIN_P0_numeric",
+        "run_id": "20261123_160831_overnight_colab_linear_sgd_raw_p0_numeric_39de",
+        "features": "P0_numeric",
+        "model": "linear_sgd",
+        "target": "raw",
+        "params": {
+          "batch_size": 256,
+          "lr": 0.01,
+          "weight_decay": 0.0,
+          "epochs": 200,
+          "patience": 20,
+          "loss": "mse",
+          "grad_clip": 5.0
+        },
+        "seed": 42,
+        "val": {
+          "model": "linear_sgd",
+          "rmse": 1.9956,
+          "mae": 1.6316,
+          "medae": 1.4329,
+          "r2": 0.1897,
+          "mape": 37.83,
+          "within_10pct": 0.217,
+          "within_20pct": 0.4212,
+          "within_1ty": 0.3588,
+          "residual_quantiles": {
+            "p05": -3.4218,
+            "p25": -1.4108,
+            "p50": 0.0812,
+            "p75": 1.445,
+            "p95": 3.1405
+          }
+        },
+        "history_meta": {
+          "best_epoch": 4,
+          "stopped_epoch": 24,
+          "best_val_rmse": 1.995618,
+          "diverged": false,
+          "n_params": 7
+        },
+        "train_seconds": 13.681
+      },
+      "P2_domain": {
+        "tag": "ABL_LIN_P2_domain",
+        "run_id": "20261123_161006_overnight_colab_linear_sgd_raw_p2_domain_749c",
+        "features": "P2_domain",
+        "model": "linear_sgd",
+        "target": "raw",
+        "params": {
+          "batch_size": 256,
+          "lr": 0.01,
+          "weight_decay": 0.0,
+          "epochs": 200,
+          "patience": 20,
+          "loss": "mse",
+          "grad_clip": 5.0
+        },
+        "seed": 42,
+        "val": {
+          "model": "linear_sgd",
+          "rmse": 1.421,
+          "mae": 1.0849,
+          "medae": 0.8549,
+          "r2": 0.5891,
+          "mape": 22.84,
+          "within_10pct": 0.3475,
+          "within_20pct": 0.6201,
+          "within_1ty": 0.5612,
+          "residual_quantiles": {
+            "p05": -2.4246,
+            "p25": -0.7979,
+            "p50": 0.0825,
+            "p75": 0.8938,
+            "p95": 2.1409
+          }
+        },
+        "history_meta": {
+          "best_epoch": 200,
+          "stopped_epoch": 200,
+          "best_val_rmse": 1.421042,
+          "diverged": false,
+          "n_params": 307
+        },
+        "train_seconds": 50.8
+      },
+      "P4_compact": {
+        "tag": "ABL_LIN_P4_compact",
+        "run_id": "20261123_161101_overnight_colab_linear_sgd_raw_p4_compact_7d88",
+        "features": "P4_compact",
+        "model": "linear_sgd",
+        "target": "raw",
+        "params": {
+          "batch_size": 256,
+          "lr": 0.01,
+          "weight_decay": 0.0,
+          "epochs": 200,
+          "patience": 20,
+          "loss": "mse",
+          "grad_clip": 5.0
+        },
+        "seed": 42,
+        "val": {
+          "model": "linear_sgd",
+          "rmse": 1.2931,
+          "mae": 0.9733,
+          "medae": 0.7511,
+          "r2": 0.6598,
+          "mape": 20.2,
+          "within_10pct": 0.3852,
+          "within_20pct": 0.6714,
+          "within_1ty": 0.615,
+          "residual_quantiles": {
+            "p05": -2.1767,
+            "p25": -0.7432,
+            "p50": 0.0206,
+            "p75": 0.7581,
+            "p95": 1.9821
+          }
+        },
+        "history_meta": {
+          "best_epoch": 83,
+          "stopped_epoch": 103,
+          "best_val_rmse": 1.293084,
+          "diverged": false,
+          "n_params": 104
+        },
+        "train_seconds": 26.718
+      },
+      "P4_geo_priors": {
+        "tag": "ABL_LIN_P4_geo_priors",
+        "run_id": "20261123_161206_overnight_colab_linear_sgd_raw_p4_geo_priors_ecb2",
+        "features": "P4_geo_priors",
+        "model": "linear_sgd",
+        "target": "raw",
+        "params": {
+          "batch_size": 256,
+          "lr": 0.01,
+          "weight_decay": 0.0,
+          "epochs": 200,
+          "patience": 20,
+          "loss": "mse",
+          "grad_clip": 5.0
+        },
+        "seed": 42,
+        "val": {
+          "model": "linear_sgd",
+          "rmse": 1.283,
+          "mae": 0.9626,
+          "medae": 0.7362,
+          "r2": 0.6651,
+          "mape": 19.93,
+          "within_10pct": 0.3916,
+          "within_20pct": 0.6809,
+          "within_1ty": 0.6205,
+          "residual_quantiles": {
+            "p05": -2.1555,
+            "p25": -0.7219,
+            "p50": 0.0234,
+            "p75": 0.7458,
+            "p95": 1.9155
+          }
+        },
+        "history_meta": {
+          "best_epoch": 83,
+          "stopped_epoch": 103,
+          "best_val_rmse": 1.282958,
+          "diverged": false,
+          "n_params": 346
+        },
+        "train_seconds": 26.446
+      }
+    },
+    "mlp": {
+      "P0_numeric": {
+        "tag": "ABL_MLP_P0_numeric",
+        "run_id": "20261123_160913_overnight_colab_mlp_raw_p0_numeric_18a8",
+        "features": "P0_numeric",
+        "model": "mlp",
+        "target": "raw",
+        "params": {
+          "hidden_dims": [
+            64
+          ],
+          "activation": "relu",
+          "use_batchnorm": false,
+          "dropout": 0.0,
+          "optimizer": "adam",
+          "loss": "mse",
+          "batch_size": 256,
+          "lr": 0.001,
+          "weight_decay": 0.0,
+          "epochs": 150,
+          "patience": 15,
+          "use_scheduler": false,
+          "grad_clip": 5.0
+        },
+        "seed": 42,
+        "val": {
+          "model": "mlp",
+          "rmse": 1.8541,
+          "mae": 1.4895,
+          "medae": 1.2823,
+          "r2": 0.3006,
+          "mape": 33.78,
+          "within_10pct": 0.2494,
+          "within_20pct": 0.4789,
+          "within_1ty": 0.409,
+          "residual_quantiles": {
+            "p05": -3.1178,
+            "p25": -1.2958,
+            "p50": 0.0201,
+            "p75": 1.2734,
+            "p95": 2.9546
+          }
+        },
+        "history_meta": {
+          "best_epoch": 132,
+          "stopped_epoch": 147,
+          "best_val_rmse": 1.854107,
+          "diverged": false,
+          "n_params": 513
+        },
+        "train_seconds": 41.737
+      },
+      "P2_domain": {
+        "tag": "ABL_MLP_P2_domain",
+        "run_id": "20261123_161023_overnight_colab_mlp_raw_p2_domain_27bb",
+        "features": "P2_domain",
+        "model": "mlp",
+        "target": "raw",
+        "params": {
+          "hidden_dims": [
+            64
+          ],
+          "activation": "relu",
+          "use_batchnorm": false,
+          "dropout": 0.0,
+          "optimizer": "adam",
+          "loss": "mse",
+          "batch_size": 256,
+          "lr": 0.001,
+          "weight_decay": 0.0,
+          "epochs": 150,
+          "patience": 15,
+          "use_scheduler": false,
+          "grad_clip": 5.0
+        },
+        "seed": 42,
+        "val": {
+          "model": "mlp",
+          "rmse": 1.3151,
+          "mae": 0.9852,
+          "medae": 0.755,
+          "r2": 0.6481,
+          "mape": 20.18,
+          "within_10pct": 0.3839,
+          "within_20pct": 0.6706,
+          "within_1ty": 0.6165,
+          "residual_quantiles": {
+            "p05": -2.1577,
+            "p25": -0.6775,
+            "p50": 0.0918,
+            "p75": 0.8127,
+            "p95": 2.1055
+          }
+        },
+        "history_meta": {
+          "best_epoch": 36,
+          "stopped_epoch": 51,
+          "best_val_rmse": 1.31508,
+          "diverged": false,
+          "n_params": 19713
+        },
+        "train_seconds": 15.112
+      },
+      "P4_compact": {
+        "tag": "ABL_MLP_P4_compact",
+        "run_id": "20261123_161128_overnight_colab_mlp_raw_p4_compact_eb62",
+        "features": "P4_compact",
+        "model": "mlp",
+        "target": "raw",
+        "params": {
+          "hidden_dims": [
+            64
+          ],
+          "activation": "relu",
+          "use_batchnorm": false,
+          "dropout": 0.0,
+          "optimizer": "adam",
+          "loss": "mse",
+          "batch_size": 256,
+          "lr": 0.001,
+          "weight_decay": 0.0,
+          "epochs": 150,
+          "patience": 15,
+          "use_scheduler": false,
+          "grad_clip": 5.0
+        },
+        "seed": 42,
+        "val": {
+          "model": "mlp",
+          "rmse": 1.2173,
+          "mae": 0.9018,
+          "medae": 0.6858,
+          "r2": 0.6985,
+          "mape": 18.11,
+          "within_10pct": 0.4187,
+          "within_20pct": 0.7096,
+          "within_1ty": 0.6624,
+          "residual_quantiles": {
+            "p05": -2.0163,
+            "p25": -0.6962,
+            "p50": -0.0016,
+            "p75": 0.6701,
+            "p95": 1.8359
+          }
+        },
+        "history_meta": {
+          "best_epoch": 36,
+          "stopped_epoch": 51,
+          "best_val_rmse": 1.217284,
+          "diverged": false,
+          "n_params": 6721
+        },
+        "train_seconds": 15.354
+      },
+      "P4_geo_priors": {
+        "tag": "ABL_MLP_P4_geo_priors",
+        "run_id": "20261123_161230_overnight_colab_mlp_raw_p4_geo_priors_7fb5",
+        "features": "P4_geo_priors",
+        "model": "mlp",
+        "target": "raw",
+        "params": {
+          "hidden_dims": [
+            64
+          ],
+          "activation": "relu",
+          "use_batchnorm": false,
+          "dropout": 0.0,
+          "optimizer": "adam",
+          "loss": "mse",
+          "batch_size": 256,
+          "lr": 0.001,
+          "weight_decay": 0.0,
+          "epochs": 150,
+          "patience": 15,
+          "use_scheduler": false,
+          "grad_clip": 5.0
+        },
+        "seed": 42,
+        "val": {
+          "model": "mlp",
+          "rmse": 1.2123,
+          "mae": 0.8933,
+          "medae": 0.6774,
+          "r2": 0.701,
+          "mape": 17.84,
+          "within_10pct": 0.4282,
+          "within_20pct": 0.716,
+          "within_1ty": 0.6631,
+          "residual_quantiles": {
+            "p05": -1.9906,
+            "p25": -0.6973,
+            "p50": -0.0166,
+            "p75": 0.6581,
+            "p95": 1.8521
+          }
+        },
+        "history_meta": {
+          "best_epoch": 28,
+          "stopped_epoch": 43,
+          "best_val_rmse": 1.21226,
+          "diverged": false,
+          "n_params": 22209
+        },
+        "train_seconds": 12.843
+      }
+    },
+    "hgb": {
+      "P2_domain": {
+        "tag": "ABL_HGB_P2_domain",
+        "run_id": "20261123_161258_overnight_colab_hgb_raw_p2_domain_1237",
+        "features": "P2_domain",
+        "model": "hgb",
+        "target": "raw",
+        "params": {},
+        "seed": 42,
+        "val": {
+          "model": "hgb",
+          "rmse": 1.3027,
+          "mae": 0.9727,
+          "medae": 0.7522,
+          "r2": 0.6547,
+          "mape": 19.94,
+          "within_10pct": 0.383,
+          "within_20pct": 0.6759,
+          "within_1ty": 0.628,
+          "residual_quantiles": {
+            "p05": -2.1882,
+            "p25": -0.7559,
+            "p50": 0.0321,
+            "p75": 0.751,
+            "p95": 2.013
+          }
+        },
+        "history_meta": {},
+        "train_seconds": 26.323
+      },
+      "P4_compact": {
+        "tag": "ABL_HGB_P4_compact",
+        "run_id": "20261123_161319_overnight_colab_hgb_raw_p4_compact_d9ab",
+        "features": "P4_compact",
+        "model": "hgb",
+        "target": "raw",
+        "params": {},
+        "seed": 42,
+        "val": {
+          "model": "hgb",
+          "rmse": 1.1711,
+          "mae": 0.8473,
+          "medae": 0.6175,
+          "r2": 0.721,
+          "mape": 16.92,
+          "within_10pct": 0.4569,
+          "within_20pct": 0.7354,
+          "within_1ty": 0.6942,
+          "residual_quantiles": {
+            "p05": -2.0296,
+            "p25": -0.6369,
+            "p50": -0.0236,
+            "p75": 0.5997,
+            "p95": 1.7114
+          }
+        },
+        "history_meta": {},
+        "train_seconds": 9.819
+      },
+      "P0_numeric": {
+        "tag": "ABL_HGB_P0_numeric",
+        "run_id": null,
+        "features": "P0_numeric",
+        "model": "hgb",
+        "target": "raw",
+        "params": {},
+        "seed": 42,
+        "val": {
+          "model": "hgb",
+          "rmse": 1.7924,
+          "mae": 1.4271,
+          "medae": 1.2212,
+          "r2": 0.3464,
+          "mape": 32.33,
+          "within_10pct": 0.2617,
+          "within_20pct": 0.4944,
+          "within_1ty": 0.4174,
+          "residual_quantiles": {
+            "p05": -3.0244,
+            "p25": -1.2012,
+            "p50": 0.0427,
+            "p75": 1.23,
+            "p95": 2.8217
+          }
+        },
+        "history_meta": {},
+        "train_seconds": 1.182
+      },
+      "P4_geo_priors": {
+        "tag": "ABL_HGB_P4_geo_priors",
+        "run_id": null,
+        "features": "P4_geo_priors",
+        "model": "hgb",
+        "target": "raw",
+        "params": {},
+        "seed": 42,
+        "val": {
+          "model": "hgb",
+          "rmse": 1.1747,
+          "mae": 0.8507,
+          "medae": 0.623,
+          "r2": 0.7192,
+          "mape": 17.0,
+          "within_10pct": 0.4584,
+          "within_20pct": 0.7358,
+          "within_1ty": 0.6895,
+          "residual_quantiles": {
+            "p05": -2.0221,
+            "p25": -0.6399,
+            "p50": -0.0057,
+            "p75": 0.6062,
+            "p95": 1.7392
+          }
+        },
+        "history_meta": {},
+        "train_seconds": 25.981
+      }
+    }
+  },
+  "track1_linear_sgd": [
+    {
+      "tag": "L01",
+      "run_id": "20261123_161206_overnight_colab_linear_sgd_raw_p4_geo_priors_ecb2",
+      "features": "P4_geo_priors",
+      "model": "linear_sgd",
+      "target": "raw",
+      "params": {
+        "batch_size": 256,
+        "lr": 0.01,
+        "weight_decay": 0.0,
+        "epochs": 200,
+        "patience": 20,
+        "loss": "mse",
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "linear_sgd",
+        "rmse": 1.283,
+        "mae": 0.9626,
+        "medae": 0.7362,
+        "r2": 0.6651,
+        "mape": 19.93,
+        "within_10pct": 0.3916,
+        "within_20pct": 0.6809,
+        "within_1ty": 0.6205,
+        "residual_quantiles": {
+          "p05": -2.1555,
+          "p25": -0.7219,
+          "p50": 0.0234,
+          "p75": 0.7458,
+          "p95": 1.9155
+        }
+      },
+      "history_meta": {
+        "best_epoch": 83,
+        "stopped_epoch": 103,
+        "best_val_rmse": 1.282958,
+        "diverged": false,
+        "n_params": 346
+      },
+      "train_seconds": 26.446
+    },
+    {
+      "tag": "L02",
+      "run_id": "20261123_161445_overnight_colab_linear_sgd_raw_p4_geo_priors_36fe",
+      "features": "P4_geo_priors",
+      "model": "linear_sgd",
+      "target": "raw",
+      "params": {
+        "batch_size": 128,
+        "lr": 0.01,
+        "weight_decay": 0.0,
+        "epochs": 200,
+        "patience": 20,
+        "loss": "mse",
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "linear_sgd",
+        "rmse": 1.2816,
+        "mae": 0.96,
+        "medae": 0.7449,
+        "r2": 0.6658,
+        "mape": 19.93,
+        "within_10pct": 0.3971,
+        "within_20pct": 0.6811,
+        "within_1ty": 0.6205,
+        "residual_quantiles": {
+          "p05": -2.1351,
+          "p25": -0.7259,
+          "p50": 0.0334,
+          "p75": 0.7599,
+          "p95": 1.9417
+        }
+      },
+      "history_meta": {
+        "best_epoch": 72,
+        "stopped_epoch": 92,
+        "best_val_rmse": 1.281554,
+        "diverged": false,
+        "n_params": 346
+      },
+      "train_seconds": 35.508
+    },
+    {
+      "tag": "L03",
+      "run_id": "20261123_161526_overnight_colab_linear_sgd_raw_p4_geo_priors_0cab",
+      "features": "P4_geo_priors",
+      "model": "linear_sgd",
+      "target": "raw",
+      "params": {
+        "batch_size": 512,
+        "lr": 0.01,
+        "weight_decay": 0.0,
+        "epochs": 200,
+        "patience": 20,
+        "loss": "mse",
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "linear_sgd",
+        "rmse": 1.2847,
+        "mae": 0.9644,
+        "medae": 0.739,
+        "r2": 0.6642,
+        "mape": 19.99,
+        "within_10pct": 0.3907,
+        "within_20pct": 0.6805,
+        "within_1ty": 0.619,
+        "residual_quantiles": {
+          "p05": -2.1611,
+          "p25": -0.7214,
+          "p50": 0.0268,
+          "p75": 0.7551,
+          "p95": 1.9264
+        }
+      },
+      "history_meta": {
+        "best_epoch": 120,
+        "stopped_epoch": 140,
+        "best_val_rmse": 1.284715,
+        "diverged": false,
+        "n_params": 346
+      },
+      "train_seconds": 30.741
+    },
+    {
+      "tag": "L04a",
+      "run_id": "20261123_161630_overnight_colab_linear_sgd_raw_p4_geo_priors_1818",
+      "features": "P4_geo_priors",
+      "model": "linear_sgd",
+      "target": "raw",
+      "params": {
+        "batch_size": 256,
+        "lr": 0.001,
+        "weight_decay": 0.0,
+        "epochs": 200,
+        "patience": 20,
+        "loss": "mse",
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "linear_sgd",
+        "rmse": 1.3035,
+        "mae": 0.9794,
+        "medae": 0.7627,
+        "r2": 0.6543,
+        "mape": 20.2,
+        "within_10pct": 0.3788,
+        "within_20pct": 0.6725,
+        "within_1ty": 0.615,
+        "residual_quantiles": {
+          "p05": -2.2381,
+          "p25": -0.7713,
+          "p50": -0.0052,
+          "p75": 0.7566,
+          "p95": 1.9301
+        }
+      },
+      "history_meta": {
+        "best_epoch": 200,
+        "stopped_epoch": 200,
+        "best_val_rmse": 1.303513,
+        "diverged": false,
+        "n_params": 346
+      },
+      "train_seconds": 52.765
+    },
+    {
+      "tag": "L04b",
+      "run_id": "20261123_161734_overnight_colab_linear_sgd_raw_p4_geo_priors_5529",
+      "features": "P4_geo_priors",
+      "model": "linear_sgd",
+      "target": "raw",
+      "params": {
+        "batch_size": 256,
+        "lr": 0.003,
+        "weight_decay": 0.0,
+        "epochs": 200,
+        "patience": 20,
+        "loss": "mse",
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "linear_sgd",
+        "rmse": 1.2852,
+        "mae": 0.9639,
+        "medae": 0.7397,
+        "r2": 0.6639,
+        "mape": 19.94,
+        "within_10pct": 0.3921,
+        "within_20pct": 0.6798,
+        "within_1ty": 0.6174,
+        "residual_quantiles": {
+          "p05": -2.1689,
+          "p25": -0.732,
+          "p50": 0.0101,
+          "p75": 0.7476,
+          "p95": 1.9236
+        }
+      },
+      "history_meta": {
+        "best_epoch": 199,
+        "stopped_epoch": 200,
+        "best_val_rmse": 1.285239,
+        "diverged": false,
+        "n_params": 346
+      },
+      "train_seconds": 52.403
+    },
+    {
+      "tag": "L04c",
+      "run_id": "20261123_161809_overnight_colab_linear_sgd_raw_p4_geo_priors_65f7",
+      "features": "P4_geo_priors",
+      "model": "linear_sgd",
+      "target": "raw",
+      "params": {
+        "batch_size": 256,
+        "lr": 0.05,
+        "weight_decay": 0.0,
+        "epochs": 200,
+        "patience": 20,
+        "loss": "mse",
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "linear_sgd",
+        "rmse": 1.2816,
+        "mae": 0.9608,
+        "medae": 0.7452,
+        "r2": 0.6658,
+        "mape": 19.84,
+        "within_10pct": 0.3958,
+        "within_20pct": 0.6831,
+        "within_1ty": 0.6227,
+        "residual_quantiles": {
+          "p05": -2.1814,
+          "p25": -0.7396,
+          "p50": 0.0334,
+          "p75": 0.7504,
+          "p95": 1.9356
+        }
+      },
+      "history_meta": {
+        "best_epoch": 72,
+        "stopped_epoch": 92,
+        "best_val_rmse": 1.281559,
+        "diverged": false,
+        "n_params": 346
+      },
+      "train_seconds": 24.204
+    },
+    {
+      "tag": "L05",
+      "run_id": "20261123_161857_overnight_colab_linear_sgd_raw_p4_geo_priors_a454",
+      "features": "P4_geo_priors",
+      "model": "linear_sgd",
+      "target": "raw",
+      "params": {
+        "batch_size": 128,
+        "lr": 0.01,
+        "weight_decay": 0.0001,
+        "epochs": 200,
+        "patience": 20,
+        "loss": "mse",
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "linear_sgd",
+        "rmse": 1.2816,
+        "mae": 0.96,
+        "medae": 0.7447,
+        "r2": 0.6658,
+        "mape": 19.93,
+        "within_10pct": 0.3967,
+        "within_20pct": 0.6811,
+        "within_1ty": 0.6201,
+        "residual_quantiles": {
+          "p05": -2.1329,
+          "p25": -0.7257,
+          "p50": 0.033,
+          "p75": 0.76,
+          "p95": 1.9415
+        }
+      },
+      "history_meta": {
+        "best_epoch": 72,
+        "stopped_epoch": 92,
+        "best_val_rmse": 1.281568,
+        "diverged": false,
+        "n_params": 346
+      },
+      "train_seconds": 36.186
+    }
+  ],
+  "track2_mlp": [
+    {
+      "tag": "N01",
+      "run_id": "20261123_161230_overnight_colab_mlp_raw_p4_geo_priors_7fb5",
+      "features": "P4_geo_priors",
+      "model": "mlp",
+      "target": "raw",
+      "params": {
+        "hidden_dims": [
+          64
+        ],
+        "activation": "relu",
+        "use_batchnorm": false,
+        "dropout": 0.0,
+        "optimizer": "adam",
+        "loss": "mse",
+        "batch_size": 256,
+        "lr": 0.001,
+        "weight_decay": 0.0,
+        "epochs": 150,
+        "patience": 15,
+        "use_scheduler": false,
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "mlp",
+        "rmse": 1.2123,
+        "mae": 0.8933,
+        "medae": 0.6774,
+        "r2": 0.701,
+        "mape": 17.84,
+        "within_10pct": 0.4282,
+        "within_20pct": 0.716,
+        "within_1ty": 0.6631,
+        "residual_quantiles": {
+          "p05": -1.9906,
+          "p25": -0.6973,
+          "p50": -0.0166,
+          "p75": 0.6581,
+          "p95": 1.8521
+        }
+      },
+      "history_meta": {
+        "best_epoch": 28,
+        "stopped_epoch": 43,
+        "best_val_rmse": 1.21226,
+        "diverged": false,
+        "n_params": 22209
+      },
+      "train_seconds": 12.843
+    },
+    {
+      "tag": "N02a",
+      "run_id": "20261123_161923_overnight_colab_mlp_raw_p4_geo_priors_acbb",
+      "features": "P4_geo_priors",
+      "model": "mlp",
+      "target": "raw",
+      "params": {
+        "hidden_dims": [
+          32
+        ],
+        "activation": "relu",
+        "use_batchnorm": false,
+        "dropout": 0.0,
+        "optimizer": "adam",
+        "loss": "mse",
+        "batch_size": 256,
+        "lr": 0.001,
+        "weight_decay": 0.0,
+        "epochs": 150,
+        "patience": 15,
+        "use_scheduler": false,
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "mlp",
+        "rmse": 1.2209,
+        "mae": 0.8985,
+        "medae": 0.6737,
+        "r2": 0.6967,
+        "mape": 17.97,
+        "within_10pct": 0.4161,
+        "within_20pct": 0.7153,
+        "within_1ty": 0.6631,
+        "residual_quantiles": {
+          "p05": -2.05,
+          "p25": -0.6737,
+          "p50": -0.0091,
+          "p75": 0.6733,
+          "p95": 1.8084
+        }
+      },
+      "history_meta": {
+        "best_epoch": 34,
+        "stopped_epoch": 49,
+        "best_val_rmse": 1.220941,
+        "diverged": false,
+        "n_params": 11105
+      },
+      "train_seconds": 15.368
+    },
+    {
+      "tag": "N02b",
+      "run_id": "20261123_161946_overnight_colab_mlp_raw_p4_geo_priors_9263",
+      "features": "P4_geo_priors",
+      "model": "mlp",
+      "target": "raw",
+      "params": {
+        "hidden_dims": [
+          128
+        ],
+        "activation": "relu",
+        "use_batchnorm": false,
+        "dropout": 0.0,
+        "optimizer": "adam",
+        "loss": "mse",
+        "batch_size": 256,
+        "lr": 0.001,
+        "weight_decay": 0.0,
+        "epochs": 150,
+        "patience": 15,
+        "use_scheduler": false,
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "mlp",
+        "rmse": 1.2061,
+        "mae": 0.8909,
+        "medae": 0.6724,
+        "r2": 0.704,
+        "mape": 17.86,
+        "within_10pct": 0.4267,
+        "within_20pct": 0.7149,
+        "within_1ty": 0.6677,
+        "residual_quantiles": {
+          "p05": -2.0191,
+          "p25": -0.6831,
+          "p50": 0.0095,
+          "p75": 0.6655,
+          "p95": 1.8666
+        }
+      },
+      "history_meta": {
+        "best_epoch": 28,
+        "stopped_epoch": 43,
+        "best_val_rmse": 1.206121,
+        "diverged": false,
+        "n_params": 44417
+      },
+      "train_seconds": 13.596
+    },
+    {
+      "tag": "N02c",
+      "run_id": "20261123_162005_overnight_colab_mlp_raw_p4_geo_priors_e319",
+      "features": "P4_geo_priors",
+      "model": "mlp",
+      "target": "raw",
+      "params": {
+        "hidden_dims": [
+          128,
+          64
+        ],
+        "activation": "relu",
+        "use_batchnorm": false,
+        "dropout": 0.0,
+        "optimizer": "adam",
+        "loss": "mse",
+        "batch_size": 256,
+        "lr": 0.001,
+        "weight_decay": 0.0,
+        "epochs": 150,
+        "patience": 15,
+        "use_scheduler": false,
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "mlp",
+        "rmse": 1.2232,
+        "mae": 0.9144,
+        "medae": 0.6861,
+        "r2": 0.6956,
+        "mape": 18.83,
+        "within_10pct": 0.4099,
+        "within_20pct": 0.7096,
+        "within_1ty": 0.6516,
+        "residual_quantiles": {
+          "p05": -1.9827,
+          "p25": -0.6055,
+          "p50": 0.0955,
+          "p75": 0.7589,
+          "p95": 1.9453
+        }
+      },
+      "history_meta": {
+        "best_epoch": 9,
+        "stopped_epoch": 24,
+        "best_val_rmse": 1.223198,
+        "diverged": false,
+        "n_params": 52609
+      },
+      "train_seconds": 8.201
+    },
+    {
+      "tag": "N02d",
+      "run_id": "20261123_162026_overnight_colab_mlp_raw_p4_geo_priors_8832",
+      "features": "P4_geo_priors",
+      "model": "mlp",
+      "target": "raw",
+      "params": {
+        "hidden_dims": [
+          128,
+          64
+        ],
+        "activation": "relu",
+        "use_batchnorm": true,
+        "dropout": 0.0,
+        "optimizer": "adam",
+        "loss": "mse",
+        "batch_size": 256,
+        "lr": 0.001,
+        "weight_decay": 0.0,
+        "epochs": 150,
+        "patience": 15,
+        "use_scheduler": false,
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "mlp",
+        "rmse": 1.2266,
+        "mae": 0.9058,
+        "medae": 0.6751,
+        "r2": 0.6939,
+        "mape": 17.99,
+        "within_10pct": 0.4163,
+        "within_20pct": 0.71,
+        "within_1ty": 0.6567,
+        "residual_quantiles": {
+          "p05": -2.1396,
+          "p25": -0.7442,
+          "p50": -0.0496,
+          "p75": 0.6131,
+          "p95": 1.8209
+        }
+      },
+      "history_meta": {
+        "best_epoch": 10,
+        "stopped_epoch": 25,
+        "best_val_rmse": 1.226598,
+        "diverged": false,
+        "n_params": 52993
+      },
+      "train_seconds": 9.262
+    },
+    {
+      "tag": "N03a",
+      "run_id": "20261123_162052_overnight_colab_mlp_raw_p4_geo_priors_7710",
+      "features": "P4_geo_priors",
+      "model": "mlp",
+      "target": "raw",
+      "params": {
+        "hidden_dims": [
+          128
+        ],
+        "activation": "relu",
+        "use_batchnorm": false,
+        "dropout": 0.0,
+        "optimizer": "adam",
+        "loss": "mse",
+        "batch_size": 128,
+        "lr": 0.001,
+        "weight_decay": 0.0,
+        "epochs": 150,
+        "patience": 15,
+        "use_scheduler": false,
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "mlp",
+        "rmse": 1.222,
+        "mae": 0.8999,
+        "medae": 0.6763,
+        "r2": 0.6962,
+        "mape": 17.86,
+        "within_10pct": 0.4218,
+        "within_20pct": 0.72,
+        "within_1ty": 0.6631,
+        "residual_quantiles": {
+          "p05": -2.1031,
+          "p25": -0.7616,
+          "p50": -0.0798,
+          "p75": 0.5874,
+          "p95": 1.7891
+        }
+      },
+      "history_meta": {
+        "best_epoch": 17,
+        "stopped_epoch": 32,
+        "best_val_rmse": 1.221983,
+        "diverged": false,
+        "n_params": 44417
+      },
+      "train_seconds": 15.767
+    },
+    {
+      "tag": "N03b",
+      "run_id": "20261123_162113_overnight_colab_mlp_raw_p4_geo_priors_215f",
+      "features": "P4_geo_priors",
+      "model": "mlp",
+      "target": "raw",
+      "params": {
+        "hidden_dims": [
+          128
+        ],
+        "activation": "relu",
+        "use_batchnorm": false,
+        "dropout": 0.0,
+        "optimizer": "adam",
+        "loss": "mse",
+        "batch_size": 512,
+        "lr": 0.001,
+        "weight_decay": 0.0,
+        "epochs": 150,
+        "patience": 15,
+        "use_scheduler": false,
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "mlp",
+        "rmse": 1.2095,
+        "mae": 0.8943,
+        "medae": 0.6664,
+        "r2": 0.7024,
+        "mape": 18.09,
+        "within_10pct": 0.4196,
+        "within_20pct": 0.7178,
+        "within_1ty": 0.6648,
+        "residual_quantiles": {
+          "p05": -1.9821,
+          "p25": -0.6509,
+          "p50": 0.0371,
+          "p75": 0.6905,
+          "p95": 1.8666
+        }
+      },
+      "history_meta": {
+        "best_epoch": 28,
+        "stopped_epoch": 43,
+        "best_val_rmse": 1.20949,
+        "diverged": false,
+        "n_params": 44417
+      },
+      "train_seconds": 9.66
+    },
+    {
+      "tag": "N04",
+      "run_id": "20261123_162149_overnight_colab_mlp_raw_p4_geo_priors_acd6",
+      "features": "P4_geo_priors",
+      "model": "mlp",
+      "target": "raw",
+      "params": {
+        "hidden_dims": [
+          128
+        ],
+        "activation": "relu",
+        "use_batchnorm": false,
+        "dropout": 0.0,
+        "optimizer": "adam",
+        "loss": "mse",
+        "batch_size": 256,
+        "lr": 0.0003,
+        "weight_decay": 0.0,
+        "epochs": 150,
+        "patience": 15,
+        "use_scheduler": false,
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "mlp",
+        "rmse": 1.2122,
+        "mae": 0.894,
+        "medae": 0.6705,
+        "r2": 0.701,
+        "mape": 17.82,
+        "within_10pct": 0.4225,
+        "within_20pct": 0.7149,
+        "within_1ty": 0.667,
+        "residual_quantiles": {
+          "p05": -1.9846,
+          "p25": -0.666,
+          "p50": 0.0012,
+          "p75": 0.6774,
+          "p95": 1.8466
+        }
+      },
+      "history_meta": {
+        "best_epoch": 65,
+        "stopped_epoch": 80,
+        "best_val_rmse": 1.212176,
+        "diverged": false,
+        "n_params": 44417
+      },
+      "train_seconds": 24.825
+    },
+    {
+      "tag": "N05a",
+      "run_id": "20261123_162213_overnight_colab_mlp_raw_p4_geo_priors_b50b",
+      "features": "P4_geo_priors",
+      "model": "mlp",
+      "target": "raw",
+      "params": {
+        "hidden_dims": [
+          128
+        ],
+        "activation": "relu",
+        "use_batchnorm": false,
+        "dropout": 0.1,
+        "optimizer": "adam",
+        "loss": "mse",
+        "batch_size": 256,
+        "lr": 0.001,
+        "weight_decay": 0.0,
+        "epochs": 150,
+        "patience": 15,
+        "use_scheduler": false,
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "mlp",
+        "rmse": 1.2046,
+        "mae": 0.8931,
+        "medae": 0.667,
+        "r2": 0.7048,
+        "mape": 17.94,
+        "within_10pct": 0.4243,
+        "within_20pct": 0.7171,
+        "within_1ty": 0.66,
+        "residual_quantiles": {
+          "p05": -2.0047,
+          "p25": -0.6792,
+          "p50": 0.009,
+          "p75": 0.6604,
+          "p95": 1.8408
+        }
+      },
+      "history_meta": {
+        "best_epoch": 28,
+        "stopped_epoch": 43,
+        "best_val_rmse": 1.20457,
+        "diverged": false,
+        "n_params": 44417
+      },
+      "train_seconds": 13.421
+    },
+    {
+      "tag": "N05b",
+      "run_id": "20261123_162238_overnight_colab_mlp_raw_p4_geo_priors_4c59",
+      "features": "P4_geo_priors",
+      "model": "mlp",
+      "target": "raw",
+      "params": {
+        "hidden_dims": [
+          128
+        ],
+        "activation": "relu",
+        "use_batchnorm": false,
+        "dropout": 0.2,
+        "optimizer": "adam",
+        "loss": "mse",
+        "batch_size": 256,
+        "lr": 0.001,
+        "weight_decay": 0.0,
+        "epochs": 150,
+        "patience": 15,
+        "use_scheduler": false,
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "mlp",
+        "rmse": 1.2068,
+        "mae": 0.8935,
+        "medae": 0.6835,
+        "r2": 0.7037,
+        "mape": 17.98,
+        "within_10pct": 0.4258,
+        "within_20pct": 0.716,
+        "within_1ty": 0.6606,
+        "residual_quantiles": {
+          "p05": -2.0025,
+          "p25": -0.6886,
+          "p50": 0.0129,
+          "p75": 0.6797,
+          "p95": 1.8346
+        }
+      },
+      "history_meta": {
+        "best_epoch": 28,
+        "stopped_epoch": 43,
+        "best_val_rmse": 1.206842,
+        "diverged": false,
+        "n_params": 44417
+      },
+      "train_seconds": 13.237
+    },
+    {
+      "tag": "N05c",
+      "run_id": "20261123_162303_overnight_colab_mlp_raw_p4_geo_priors_f617",
+      "features": "P4_geo_priors",
+      "model": "mlp",
+      "target": "raw",
+      "params": {
+        "hidden_dims": [
+          128
+        ],
+        "activation": "relu",
+        "use_batchnorm": false,
+        "dropout": 0.1,
+        "optimizer": "adam",
+        "loss": "huber",
+        "batch_size": 256,
+        "lr": 0.001,
+        "weight_decay": 0.0,
+        "epochs": 150,
+        "patience": 15,
+        "use_scheduler": false,
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "mlp",
+        "rmse": 1.2098,
+        "mae": 0.8794,
+        "medae": 0.6438,
+        "r2": 0.7022,
+        "mape": 17.44,
+        "within_10pct": 0.4368,
+        "within_20pct": 0.7239,
+        "within_1ty": 0.6785,
+        "residual_quantiles": {
+          "p05": -2.0215,
+          "p25": -0.6766,
+          "p50": -0.0146,
+          "p75": 0.6125,
+          "p95": 1.8235
+        }
+      },
+      "history_meta": {
+        "best_epoch": 28,
+        "stopped_epoch": 43,
+        "best_val_rmse": 1.209817,
+        "diverged": false,
+        "n_params": 44417
+      },
+      "train_seconds": 13.475
+    },
+    {
+      "tag": "N05d",
+      "run_id": "20261123_162331_overnight_colab_mlp_raw_p4_geo_priors_b74b",
+      "features": "P4_geo_priors",
+      "model": "mlp",
+      "target": "raw",
+      "params": {
+        "hidden_dims": [
+          128
+        ],
+        "activation": "relu",
+        "use_batchnorm": false,
+        "dropout": 0.1,
+        "optimizer": "adam",
+        "loss": "smooth_l1",
+        "batch_size": 256,
+        "lr": 0.001,
+        "weight_decay": 0.0,
+        "epochs": 150,
+        "patience": 15,
+        "use_scheduler": false,
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "mlp",
+        "rmse": 1.215,
+        "mae": 0.8793,
+        "medae": 0.6393,
+        "r2": 0.6996,
+        "mape": 17.38,
+        "within_10pct": 0.4439,
+        "within_20pct": 0.7241,
+        "within_1ty": 0.6774,
+        "residual_quantiles": {
+          "p05": -2.0242,
+          "p25": -0.6462,
+          "p50": 0.0274,
+          "p75": 0.6308,
+          "p95": 1.8041
+        }
+      },
+      "history_meta": {
+        "best_epoch": 42,
+        "stopped_epoch": 57,
+        "best_val_rmse": 1.215019,
+        "diverged": false,
+        "n_params": 44417
+      },
+      "train_seconds": 17.55
+    },
+    {
+      "tag": "N05e",
+      "run_id": "20261123_162356_overnight_colab_mlp_raw_p4_geo_priors_0f44",
+      "features": "P4_geo_priors",
+      "model": "mlp",
+      "target": "raw",
+      "params": {
+        "hidden_dims": [
+          128
+        ],
+        "activation": "relu",
+        "use_batchnorm": false,
+        "dropout": 0.1,
+        "optimizer": "adam",
+        "loss": "mse",
+        "batch_size": 256,
+        "lr": 0.001,
+        "weight_decay": 0.0001,
+        "epochs": 150,
+        "patience": 15,
+        "use_scheduler": false,
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "mlp",
+        "rmse": 1.2042,
+        "mae": 0.8909,
+        "medae": 0.6715,
+        "r2": 0.705,
+        "mape": 17.84,
+        "within_10pct": 0.4249,
+        "within_20pct": 0.7202,
+        "within_1ty": 0.6659,
+        "residual_quantiles": {
+          "p05": -2.0094,
+          "p25": -0.6924,
+          "p50": 0.0054,
+          "p75": 0.6476,
+          "p95": 1.8345
+        }
+      },
+      "history_meta": {
+        "best_epoch": 28,
+        "stopped_epoch": 43,
+        "best_val_rmse": 1.204185,
+        "diverged": false,
+        "n_params": 44417
+      },
+      "train_seconds": 13.466
+    },
+    {
+      "tag": "N06",
+      "run_id": "20261123_162426_overnight_colab_mlp_log1p_p4_geo_priors_0817",
+      "features": "P4_geo_priors",
+      "model": "mlp",
+      "target": "log1p",
+      "params": {
+        "hidden_dims": [
+          128
+        ],
+        "activation": "relu",
+        "use_batchnorm": false,
+        "dropout": 0.1,
+        "optimizer": "adam",
+        "loss": "mse",
+        "batch_size": 256,
+        "lr": 0.001,
+        "weight_decay": 0.0001,
+        "epochs": 150,
+        "patience": 15,
+        "use_scheduler": false,
+        "grad_clip": 5.0
+      },
+      "seed": 42,
+      "val": {
+        "model": "mlp",
+        "rmse": 1.2287,
+        "mae": 0.9027,
+        "medae": 0.6789,
+        "r2": 0.6928,
+        "mape": 17.73,
+        "within_10pct": 0.4218,
+        "within_20pct": 0.7012,
+        "within_1ty": 0.6628,
+        "residual_quantiles": {
+          "p05": -2.041,
+          "p25": -0.6033,
+          "p50": 0.0781,
+          "p75": 0.7276,
+          "p95": 1.842
+        }
+      },
+      "history_meta": {
+        "best_epoch": 42,
+        "stopped_epoch": 57,
+        "best_val_rmse": 1.228734,
+        "diverged": false,
+        "n_params": 44417
+      },
+      "train_seconds": 18.476
+    }
+  ],
+  "best_linear_config": {
+    "tag": "L02",
+    "run_id": "20261123_161445_overnight_colab_linear_sgd_raw_p4_geo_priors_36fe",
+    "features": "P4_geo_priors",
+    "model": "linear_sgd",
+    "target": "raw",
+    "params": {
+      "batch_size": 128,
+      "lr": 0.01,
+      "weight_decay": 0.0,
+      "epochs": 200,
+      "patience": 20,
+      "loss": "mse",
+      "grad_clip": 5.0
+    },
+    "seed": 42,
+    "val": {
+      "model": "linear_sgd",
+      "rmse": 1.2816,
+      "mae": 0.96,
+      "medae": 0.7449,
+      "r2": 0.6658,
+      "mape": 19.93,
+      "within_10pct": 0.3971,
+      "within_20pct": 0.6811,
+      "within_1ty": 0.6205,
+      "residual_quantiles": {
+        "p05": -2.1351,
+        "p25": -0.7259,
+        "p50": 0.0334,
+        "p75": 0.7599,
+        "p95": 1.9417
+      }
+    },
+    "history_meta": {
+      "best_epoch": 72,
+      "stopped_epoch": 92,
+      "best_val_rmse": 1.281554,
+      "diverged": false,
+      "n_params": 346
+    },
+    "train_seconds": 35.508
+  },
+  "best_mlp_config": {
+    "tag": "N05e",
+    "run_id": "20261123_162356_overnight_colab_mlp_raw_p4_geo_priors_0f44",
+    "features": "P4_geo_priors",
+    "model": "mlp",
+    "target": "raw",
+    "params": {
+      "hidden_dims": [
+        128
+      ],
+      "activation": "relu",
+      "use_batchnorm": false,
+      "dropout": 0.1,
+      "optimizer": "adam",
+      "loss": "mse",
+      "batch_size": 256,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "epochs": 150,
+      "patience": 15,
+      "use_scheduler": false,
+      "grad_clip": 5.0
+    },
+    "seed": 42,
+    "val": {
+      "model": "mlp",
+      "rmse": 1.2042,
+      "mae": 0.8909,
+      "medae": 0.6715,
+      "r2": 0.705,
+      "mape": 17.84,
+      "within_10pct": 0.4249,
+      "within_20pct": 0.7202,
+      "within_1ty": 0.6659,
+      "residual_quantiles": {
+        "p05": -2.0094,
+        "p25": -0.6924,
+        "p50": 0.0054,
+        "p75": 0.6476,
+        "p95": 1.8345
+      }
+    },
+    "history_meta": {
+      "best_epoch": 28,
+      "stopped_epoch": 43,
+      "best_val_rmse": 1.204185,
+      "diverged": false,
+      "n_params": 44417
+    },
+    "train_seconds": 13.466
+  },
+  "multiseed_mlp": {
+    "seeds": [
+      42,
+      123,
+      2026
+    ],
+    "runs": [
+      {
+        "tag": "N05e",
+        "run_id": "20261123_162356_overnight_colab_mlp_raw_p4_geo_priors_0f44",
+        "features": "P4_geo_priors",
+        "model": "mlp",
+        "target": "raw",
+        "params": {
+          "hidden_dims": [
+            128
+          ],
+          "activation": "relu",
+          "use_batchnorm": false,
+          "dropout": 0.1,
+          "optimizer": "adam",
+          "loss": "mse",
+          "batch_size": 256,
+          "lr": 0.001,
+          "weight_decay": 0.0001,
+          "epochs": 150,
+          "patience": 15,
+          "use_scheduler": false,
+          "grad_clip": 5.0
+        },
+        "seed": 42,
+        "val": {
+          "model": "mlp",
+          "rmse": 1.2042,
+          "mae": 0.8909,
+          "medae": 0.6715,
+          "r2": 0.705,
+          "mape": 17.84,
+          "within_10pct": 0.4249,
+          "within_20pct": 0.7202,
+          "within_1ty": 0.6659,
+          "residual_quantiles": {
+            "p05": -2.0094,
+            "p25": -0.6924,
+            "p50": 0.0054,
+            "p75": 0.6476,
+            "p95": 1.8345
+          }
+        },
+        "history_meta": {
+          "best_epoch": 28,
+          "stopped_epoch": 43,
+          "best_val_rmse": 1.204185,
+          "diverged": false,
+          "n_params": 44417
+        },
+        "train_seconds": 13.466
+      },
+      {
+        "tag": "MLP_S123",
+        "run_id": "20261123_162451_overnight_colab_mlp_raw_p4_geo_priors_4878",
+        "features": "P4_geo_priors",
+        "model": "mlp",
+        "target": "raw",
+        "params": {
+          "hidden_dims": [
+            128
+          ],
+          "activation": "relu",
+          "use_batchnorm": false,
+          "dropout": 0.1,
+          "optimizer": "adam",
+          "loss": "mse",
+          "batch_size": 256,
+          "lr": 0.001,
+          "weight_decay": 0.0001,
+          "epochs": 150,
+          "patience": 15,
+          "use_scheduler": false,
+          "grad_clip": 5.0
+        },
+        "seed": 123,
+        "val": {
+          "model": "mlp",
+          "rmse": 1.2095,
+          "mae": 0.8986,
+          "medae": 0.6854,
+          "r2": 0.7024,
+          "mape": 18.36,
+          "within_10pct": 0.4207,
+          "within_20pct": 0.7043,
+          "within_1ty": 0.6593,
+          "residual_quantiles": {
+            "p05": -1.977,
+            "p25": -0.6285,
+            "p50": 0.0853,
+            "p75": 0.7271,
+            "p95": 1.855
+          }
+        },
+        "history_meta": {
+          "best_epoch": 29,
+          "stopped_epoch": 44,
+          "best_val_rmse": 1.209465,
+          "diverged": false,
+          "n_params": 44417
+        },
+        "train_seconds": 13.972
+      },
+      {
+        "tag": "MLP_S2026",
+        "run_id": "20261123_162519_overnight_colab_mlp_raw_p4_geo_priors_1864",
+        "features": "P4_geo_priors",
+        "model": "mlp",
+        "target": "raw",
+        "params": {
+          "hidden_dims": [
+            128
+          ],
+          "activation": "relu",
+          "use_batchnorm": false,
+          "dropout": 0.1,
+          "optimizer": "adam",
+          "loss": "mse",
+          "batch_size": 256,
+          "lr": 0.001,
+          "weight_decay": 0.0001,
+          "epochs": 150,
+          "patience": 15,
+          "use_scheduler": false,
+          "grad_clip": 5.0
+        },
+        "seed": 2026,
+        "val": {
+          "model": "mlp",
+          "rmse": 1.21,
+          "mae": 0.892,
+          "medae": 0.6797,
+          "r2": 0.7021,
+          "mape": 17.81,
+          "within_10pct": 0.4227,
+          "within_20pct": 0.7138,
+          "within_1ty": 0.6653,
+          "residual_quantiles": {
+            "p05": -1.9713,
+            "p25": -0.689,
+            "p50": 0.0206,
+            "p75": 0.6725,
+            "p95": 1.8112
+          }
+        },
+        "history_meta": {
+          "best_epoch": 40,
+          "stopped_epoch": 55,
+          "best_val_rmse": 1.210021,
+          "diverged": false,
+          "n_params": 44417
+        },
+        "train_seconds": 17.699
+      }
+    ],
+    "rmse": {
+      "values": [
+        1.2042,
+        1.2095,
+        1.21
+      ],
+      "mean": 1.2079,
+      "std": 0.0032
+    },
+    "mae": {
+      "values": [
+        0.8909,
+        0.8986,
+        0.892
+      ],
+      "mean": 0.8938,
+      "std": 0.0042
+    },
+    "r2": {
+      "values": [
+        0.705,
+        0.7024,
+        0.7021
+      ],
+      "mean": 0.7032,
+      "std": 0.0016
+    },
+    "mape": {
+      "values": [
+        17.84,
+        18.36,
+        17.81
+      ],
+      "mean": 18.0033,
+      "std": 0.3092
+    },
+    "within_10pct": {
+      "values": [
+        0.4249,
+        0.4207,
+        0.4227
+      ],
+      "mean": 0.4228,
+      "std": 0.0021
+    },
+    "within_20pct": {
+      "values": [
+        0.7202,
+        0.7043,
+        0.7138
+      ],
+      "mean": 0.7128,
+      "std": 0.008
+    },
+    "within_1ty": {
+      "values": [
+        0.6659,
+        0.6593,
+        0.6653
+      ],
+      "mean": 0.6635,
+      "std": 0.0036
+    }
+  },
+  "final_models": {
+    "linear_sgd": {
+      "run_id": "20261123_162607_final_locked_linear_sgd_raw_p4_geo_priors_720b",
+      "label": "Linear (Mini-batch SGD, P4_geo_priors)",
+      "model": "linear_sgd",
+      "features": "P4_geo_priors",
+      "n_features": 345,
+      "target": "raw",
+      "params": {
+        "batch_size": 128,
+        "lr": 0.01,
+        "weight_decay": 0.0,
+        "epochs": 200,
+        "patience": 20,
+        "loss": "mse",
+        "grad_clip": 5.0
+      },
+      "hardware": "GPU (Tesla T4)",
+      "train_seconds": 35.411,
+      "val": {
+        "model": "linear_sgd",
+        "rmse": 1.2816,
+        "mae": 0.96,
+        "medae": 0.7449,
+        "r2": 0.6658,
+        "mape": 19.93,
+        "within_10pct": 0.3971,
+        "within_20pct": 0.6811,
+        "within_1ty": 0.6205,
+        "residual_quantiles": {
+          "p05": -2.1351,
+          "p25": -0.7259,
+          "p50": 0.0334,
+          "p75": 0.7599,
+          "p95": 1.9417
+        }
+      },
+      "test": {
+        "model": "linear_sgd",
+        "rmse": 1.2936,
+        "mae": 0.9698,
+        "medae": 0.7558,
+        "r2": 0.6566,
+        "mape": 19.92,
+        "within_10pct": 0.392,
+        "within_20pct": 0.6693,
+        "within_1ty": 0.6267,
+        "residual_quantiles": {
+          "p05": -2.1399,
+          "p25": -0.6932,
+          "p50": 0.0718,
+          "p75": 0.8096,
+          "p95": 1.9885
+        }
+      },
+      "history": {
+        "train_loss": [
+          7.137707,
+          2.029916,
+          1.871146,
+          1.801416,
+          1.765658,
+          1.741488,
+          1.721262,
+          1.708923,
+          1.69893,
+          1.692033,
+          1.681601,
+          1.678082,
+          1.6722,
+          1.667034,
+          1.663576,
+          1.6593,
+          1.655737,
+          1.653801,
+          1.650245,
+          1.647968,
+          1.650211,
+          1.645437,
+          1.64437,
+          1.64236,
+          1.642367,
+          1.641532,
+          1.639397,
+          1.639567,
+          1.638463,
+          1.637601,
+          1.635702,
+          1.634812,
+          1.634992,
+          1.636388,
+          1.633727,
+          1.633198,
+          1.633099,
+          1.630728,
+          1.631364,
+          1.631308,
+          1.631512,
+          1.630444,
+          1.626501,
+          1.629426,
+          1.627879,
+          1.628177,
+          1.629682,
+          1.627351,
+          1.627225,
+          1.627234,
+          1.627265,
+          1.626217,
+          1.625202,
+          1.625007,
+          1.625834,
+          1.623101,
+          1.623665,
+          1.623128,
+          1.624944,
+          1.622988,
+          1.62392,
+          1.622966,
+          1.623124,
+          1.622093,
+          1.622288,
+          1.621075,
+          1.621198,
+          1.62069,
+          1.620309,
+          1.619614,
+          1.621232,
+          1.619905,
+          1.620445,
+          1.620031,
+          1.618273,
+          1.619432,
+          1.61871,
+          1.618562,
+          1.618354,
+          1.617898,
+          1.619337,
+          1.617967,
+          1.617361,
+          1.617385,
+          1.617719,
+          1.616884,
+          1.616702,
+          1.616293,
+          1.61605,
+          1.615834,
+          1.615607,
+          1.614478
+        ],
+        "val_loss": [
+          2.182791,
+          1.968577,
+          1.840546,
+          1.801078,
+          1.771208,
+          1.770101,
+          1.739413,
+          1.752736,
+          1.71601,
+          1.711002,
+          1.702493,
+          1.688771,
+          1.689108,
+          1.685054,
+          1.679027,
+          1.694615,
+          1.688441,
+          1.671195,
+          1.671583,
+          1.690608,
+          1.676414,
+          1.666801,
+          1.668589,
+          1.661462,
+          1.659218,
+          1.660783,
+          1.660087,
+          1.653993,
+          1.673545,
+          1.662333,
+          1.661438,
+          1.659839,
+          1.657899,
+          1.658991,
+          1.665744,
+          1.649683,
+          1.650802,
+          1.655012,
+          1.660989,
+          1.663849,
+          1.652486,
+          1.652423,
+          1.66249,
+          1.653976,
+          1.652142,
+          1.666893,
+          1.655125,
+          1.648485,
+          1.65134,
+          1.654131,
+          1.651578,
+          1.655556,
+          1.652186,
+          1.65201,
+          1.661085,
+          1.65157,
+          1.664619,
+          1.658397,
+          1.647707,
+          1.674988,
+          1.652978,
+          1.656846,
+          1.653467,
+          1.657295,
+          1.644614,
+          1.644025,
+          1.646331,
+          1.654158,
+          1.653507,
+          1.657249,
+          1.669363,
+          1.642381,
+          1.650833,
+          1.645456,
+          1.650727,
+          1.643924,
+          1.647035,
+          1.662065,
+          1.645564,
+          1.647128,
+          1.651164,
+          1.682538,
+          1.647914,
+          1.645583,
+          1.644938,
+          1.659058,
+          1.652139,
+          1.648175,
+          1.64841,
+          1.652929,
+          1.652151,
+          1.65376
+        ],
+        "val_rmse": [
+          1.477427,
+          1.40306,
+          1.356667,
+          1.342042,
+          1.330868,
+          1.330451,
+          1.318868,
+          1.323909,
+          1.309966,
+          1.308053,
+          1.304796,
+          1.299527,
+          1.299657,
+          1.298096,
+          1.295773,
+          1.301774,
+          1.2994,
+          1.292747,
+          1.292897,
+          1.300234,
+          1.294764,
+          1.291046,
+          1.291739,
+          1.288977,
+          1.288106,
+          1.288714,
+          1.288443,
+          1.286077,
+          1.293656,
+          1.289315,
+          1.288968,
+          1.288347,
+          1.287594,
+          1.288018,
+          1.290637,
+          1.2844,
+          1.284836,
+          1.286473,
+          1.288794,
+          1.289903,
+          1.285491,
+          1.285466,
+          1.289376,
+          1.28607,
+          1.285357,
+          1.291082,
+          1.286517,
+          1.283934,
+          1.285045,
+          1.28613,
+          1.285138,
+          1.286684,
+          1.285374,
+          1.285305,
+          1.288831,
+          1.285134,
+          1.290201,
+          1.287788,
+          1.28363,
+          1.294213,
+          1.285682,
+          1.287185,
+          1.285872,
+          1.28736,
+          1.282425,
+          1.282195,
+          1.283094,
+          1.286141,
+          1.285887,
+          1.287342,
+          1.292038,
+          1.281554,
+          1.284848,
+          1.282753,
+          1.284806,
+          1.282156,
+          1.283369,
+          1.289211,
+          1.282795,
+          1.283405,
+          1.284976,
+          1.297127,
+          1.283711,
+          1.282803,
+          1.282551,
+          1.288044,
+          1.285356,
+          1.283813,
+          1.283904,
+          1.285663,
+          1.28536,
+          1.285986
+        ],
+        "val_mae": [
+          1.134306,
+          1.067597,
+          1.026816,
+          1.012762,
+          1.003948,
+          1.00208,
+          0.994738,
+          0.995977,
+          0.985322,
+          0.981406,
+          0.98238,
+          0.97614,
+          0.977107,
+          0.973942,
+          0.972842,
+          0.978118,
+          0.975246,
+          0.970101,
+          0.970833,
+          0.97473,
+          0.971074,
+          0.971237,
+          0.967407,
+          0.966526,
+          0.966182,
+          0.965146,
+          0.966451,
+          0.967067,
+          0.969124,
+          0.966282,
+          0.964813,
+          0.966565,
+          0.964724,
+          0.967694,
+          0.965461,
+          0.965049,
+          0.963284,
+          0.963385,
+          0.971528,
+          0.964509,
+          0.965277,
+          0.963219,
+          0.967882,
+          0.963846,
+          0.964095,
+          0.969128,
+          0.964659,
+          0.964767,
+          0.963891,
+          0.96525,
+          0.961606,
+          0.962371,
+          0.961885,
+          0.964807,
+          0.966629,
+          0.964583,
+          0.966032,
+          0.965901,
+          0.962018,
+          0.969438,
+          0.963275,
+          0.961839,
+          0.963352,
+          0.964957,
+          0.959403,
+          0.961995,
+          0.961508,
+          0.965775,
+          0.964336,
+          0.963606,
+          0.96901,
+          0.959991,
+          0.961569,
+          0.961368,
+          0.961587,
+          0.960878,
+          0.96135,
+          0.962975,
+          0.960723,
+          0.962204,
+          0.96309,
+          0.970767,
+          0.962273,
+          0.960966,
+          0.961005,
+          0.962286,
+          0.964628,
+          0.962845,
+          0.957888,
+          0.963191,
+          0.964288,
+          0.964725
+        ],
+        "val_r2": [
+          0.555892,
+          0.599476,
+          0.625525,
+          0.633555,
+          0.639632,
+          0.639858,
+          0.646102,
+          0.643391,
+          0.650863,
+          0.651882,
+          0.653613,
+          0.656405,
+          0.656337,
+          0.657161,
+          0.658388,
+          0.655216,
+          0.656472,
+          0.659981,
+          0.659902,
+          0.656031,
+          0.658919,
+          0.660875,
+          0.660511,
+          0.661961,
+          0.662418,
+          0.6621,
+          0.662241,
+          0.663481,
+          0.659503,
+          0.661784,
+          0.661966,
+          0.662292,
+          0.662686,
+          0.662464,
+          0.66109,
+          0.664358,
+          0.66413,
+          0.663274,
+          0.662058,
+          0.661476,
+          0.663788,
+          0.6638,
+          0.661752,
+          0.663484,
+          0.663858,
+          0.660856,
+          0.663251,
+          0.664602,
+          0.664021,
+          0.663453,
+          0.663972,
+          0.663163,
+          0.663849,
+          0.663884,
+          0.662038,
+          0.663974,
+          0.661319,
+          0.662585,
+          0.66476,
+          0.659209,
+          0.663688,
+          0.662901,
+          0.663588,
+          0.662809,
+          0.665389,
+          0.665509,
+          0.66504,
+          0.663447,
+          0.66358,
+          0.662819,
+          0.660354,
+          0.665844,
+          0.664124,
+          0.665218,
+          0.664146,
+          0.66553,
+          0.664897,
+          0.661839,
+          0.665196,
+          0.664878,
+          0.664056,
+          0.657673,
+          0.664718,
+          0.665192,
+          0.665323,
+          0.66245,
+          0.663858,
+          0.664665,
+          0.664617,
+          0.663697,
+          0.663856,
+          0.663528
+        ],
+        "best_epoch": 72,
+        "stopped_epoch": 92,
+        "best_val_rmse": 1.281554,
+        "diverged": false,
+        "n_params": 346
+      }
+    },
+    "mlp": {
+      "run_id": "20261123_162634_final_locked_mlp_raw_p4_geo_priors_0653",
+      "label": "MLP (Adam, P4_geo_priors, raw)",
+      "model": "mlp",
+      "features": "P4_geo_priors",
+      "n_features": 345,
+      "target": "raw",
+      "params": {
+        "hidden_dims": [
+          128
+        ],
+        "activation": "relu",
+        "use_batchnorm": false,
+        "dropout": 0.1,
+        "optimizer": "adam",
+        "loss": "mse",
+        "batch_size": 256,
+        "lr": 0.001,
+        "weight_decay": 0.0001,
+        "epochs": 150,
+        "patience": 15,
+        "use_scheduler": false,
+        "grad_clip": 5.0
+      },
+      "hardware": "GPU (Tesla T4)",
+      "train_seconds": 13.228,
+      "val": {
+        "model": "mlp",
+        "rmse": 1.2042,
+        "mae": 0.8909,
+        "medae": 0.6715,
+        "r2": 0.705,
+        "mape": 17.84,
+        "within_10pct": 0.4249,
+        "within_20pct": 0.7202,
+        "within_1ty": 0.6659,
+        "residual_quantiles": {
+          "p05": -2.0094,
+          "p25": -0.6924,
+          "p50": 0.0054,
+          "p75": 0.6476,
+          "p95": 1.8345
+        }
+      },
+      "test": {
+        "model": "mlp",
+        "rmse": 1.23,
+        "mae": 0.8987,
+        "medae": 0.669,
+        "r2": 0.6896,
+        "mape": 17.72,
+        "within_10pct": 0.4278,
+        "within_20pct": 0.7106,
+        "within_1ty": 0.6682,
+        "residual_quantiles": {
+          "p05": -2.0968,
+          "p25": -0.6546,
+          "p50": 0.0362,
+          "p75": 0.6769,
+          "p95": 1.8049
+        }
+      },
+      "history": {
+        "train_loss": [
+          15.577152,
+          2.026291,
+          1.759199,
+          1.670706,
+          1.631654,
+          1.583361,
+          1.575689,
+          1.530528,
+          1.5115,
+          1.510316,
+          1.465672,
+          1.459475,
+          1.446816,
+          1.428774,
+          1.419677,
+          1.410421,
+          1.400521,
+          1.371963,
+          1.382839,
+          1.366218,
+          1.362316,
+          1.339822,
+          1.327876,
+          1.326955,
+          1.310713,
+          1.303914,
+          1.307545,
+          1.295281,
+          1.284286,
+          1.28384,
+          1.27596,
+          1.256018,
+          1.257429,
+          1.252573,
+          1.24778,
+          1.23361,
+          1.230478,
+          1.225875,
+          1.213009,
+          1.214803,
+          1.205874,
+          1.195801,
+          1.185284
+        ],
+        "val_loss": [
+          2.459699,
+          1.760471,
+          1.656517,
+          1.629781,
+          1.588407,
+          1.574407,
+          1.552988,
+          1.531608,
+          1.518245,
+          1.528898,
+          1.510314,
+          1.501517,
+          1.496587,
+          1.485331,
+          1.516194,
+          1.480378,
+          1.487694,
+          1.505951,
+          1.492097,
+          1.515024,
+          1.482033,
+          1.489406,
+          1.465037,
+          1.475502,
+          1.460013,
+          1.485977,
+          1.486531,
+          1.450061,
+          1.464865,
+          1.475183,
+          1.477448,
+          1.4779,
+          1.483935,
+          1.467034,
+          1.47199,
+          1.454695,
+          1.467897,
+          1.47774,
+          1.481149,
+          1.487283,
+          1.490268,
+          1.457337,
+          1.482807
+        ],
+        "val_rmse": [
+          1.568343,
+          1.326828,
+          1.287057,
+          1.276629,
+          1.26032,
+          1.254754,
+          1.246189,
+          1.237581,
+          1.232171,
+          1.236486,
+          1.228948,
+          1.225364,
+          1.223351,
+          1.218742,
+          1.231338,
+          1.216708,
+          1.219711,
+          1.227172,
+          1.221514,
+          1.230863,
+          1.217388,
+          1.220412,
+          1.210387,
+          1.214702,
+          1.20831,
+          1.219007,
+          1.219234,
+          1.204185,
+          1.210316,
+          1.214571,
+          1.215503,
+          1.215689,
+          1.218169,
+          1.211212,
+          1.213256,
+          1.206107,
+          1.211568,
+          1.215623,
+          1.217025,
+          1.219542,
+          1.220765,
+          1.207202,
+          1.217706
+        ],
+        "val_mae": [
+          1.204999,
+          0.994276,
+          0.968605,
+          0.953673,
+          0.944157,
+          0.934541,
+          0.929343,
+          0.922498,
+          0.914886,
+          0.916653,
+          0.910266,
+          0.914313,
+          0.9062,
+          0.902909,
+          0.909345,
+          0.901572,
+          0.900535,
+          0.903805,
+          0.903866,
+          0.903959,
+          0.897133,
+          0.902618,
+          0.895494,
+          0.903264,
+          0.892625,
+          0.899998,
+          0.899308,
+          0.89091,
+          0.891059,
+          0.897484,
+          0.898522,
+          0.900447,
+          0.895993,
+          0.892486,
+          0.896691,
+          0.88931,
+          0.893609,
+          0.896764,
+          0.90348,
+          0.899828,
+          0.897819,
+          0.891264,
+          0.899749
+        ],
+        "val_r2": [
+          0.499553,
+          0.641817,
+          0.662968,
+          0.668407,
+          0.676825,
+          0.679674,
+          0.684031,
+          0.688381,
+          0.6911,
+          0.688933,
+          0.692714,
+          0.694503,
+          0.695507,
+          0.697797,
+          0.691517,
+          0.698804,
+          0.697316,
+          0.693601,
+          0.69642,
+          0.691756,
+          0.698468,
+          0.696968,
+          0.701926,
+          0.699797,
+          0.702948,
+          0.697665,
+          0.697553,
+          0.704973,
+          0.701961,
+          0.699861,
+          0.699401,
+          0.699309,
+          0.698081,
+          0.701519,
+          0.700511,
+          0.70403,
+          0.701344,
+          0.699341,
+          0.698648,
+          0.6974,
+          0.696792,
+          0.703492,
+          0.69831
+        ],
+        "best_epoch": 28,
+        "stopped_epoch": 43,
+        "best_val_rmse": 1.204185,
+        "diverged": false,
+        "n_params": 44417
+      }
+    },
+    "hgb": {
+      "run_id": "20261123_162714_final_locked_hgb_raw_p4_geo_priors_32fb",
+      "label": "HGB (P4_geo_priors, External Tree Ref)",
+      "model": "hgb",
+      "features": "P4_geo_priors",
+      "n_features": 345,
+      "target": "raw",
+      "params": {},
+      "hardware": "GPU (Tesla T4)",
+      "train_seconds": 25.296,
+      "val": {
+        "model": "hgb",
+        "rmse": 1.1747,
+        "mae": 0.8507,
+        "medae": 0.623,
+        "r2": 0.7192,
+        "mape": 17.0,
+        "within_10pct": 0.4584,
+        "within_20pct": 0.7358,
+        "within_1ty": 0.6895,
+        "residual_quantiles": {
+          "p05": -2.0221,
+          "p25": -0.6399,
+          "p50": -0.0057,
+          "p75": 0.6062,
+          "p95": 1.7392
+        }
+      },
+      "test": {
+        "model": "hgb",
+        "rmse": 1.1955,
+        "mae": 0.8581,
+        "medae": 0.5994,
+        "r2": 0.7067,
+        "mape": 16.89,
+        "within_10pct": 0.4604,
+        "within_20pct": 0.726,
+        "within_1ty": 0.6878,
+        "residual_quantiles": {
+          "p05": -2.0376,
+          "p25": -0.5768,
+          "p50": 0.0536,
+          "p75": 0.6164,
+          "p95": 1.7878
+        }
+      },
+      "history": {}
+    },
+    "rf": {
+      "run_id": "20261123_163322_final_locked_rf_raw_p4_geo_priors_50ff",
+      "label": "Random Forest (P4_geo_priors, External Tree Ref)",
+      "model": "rf",
+      "features": "P4_geo_priors",
+      "n_features": 345,
+      "target": "raw",
+      "params": {},
+      "hardware": "GPU (Tesla T4)",
+      "train_seconds": 33.168,
+      "val": {
+        "model": "rf",
+        "rmse": 1.1932,
+        "mae": 0.8625,
+        "medae": 0.6302,
+        "r2": 0.7103,
+        "mape": 17.87,
+        "within_10pct": 0.4626,
+        "within_20pct": 0.7275,
+        "within_1ty": 0.6822,
+        "residual_quantiles": {
+          "p05": -2.0747,
+          "p25": -0.6308,
+          "p50": 0.0188,
+          "p75": 0.6295,
+          "p95": 1.7727
+        }
+      },
+      "test": {
+        "model": "rf",
+        "rmse": 1.2026,
+        "mae": 0.8561,
+        "medae": 0.5966,
+        "r2": 0.7032,
+        "mape": 17.51,
+        "within_10pct": 0.4789,
+        "within_20pct": 0.7309,
+        "within_1ty": 0.6925,
+        "residual_quantiles": {
+          "p05": -2.0498,
+          "p25": -0.5548,
+          "p50": 0.073,
+          "p75": 0.6188,
+          "p95": 1.8696
+        }
+      },
+      "history": {}
+    }
+  },
+  "segment_reports": {
+    "linear_sgd": [
+      {
+        "segment": "Giá thấp (< 4 tỷ)",
+        "count": 1019,
+        "rmse": 1.3562,
+        "mae": 0.9959,
+        "medae": 0.7537,
+        "r2": -2.1201,
+        "mape": 38.62,
+        "within_10pct": 0.2296,
+        "within_20pct": 0.3896,
+        "within_1ty": 0.6251
+      },
+      {
+        "segment": "Giá trung bình (4–7 tỷ)",
+        "count": 2035,
+        "rmse": 1.0402,
+        "mae": 0.8036,
+        "medae": 0.6508,
+        "r2": -0.5089,
+        "mape": 15.09,
+        "within_10pct": 0.4378,
+        "within_20pct": 0.7317,
+        "within_1ty": 0.6988
+      },
+      {
+        "segment": "Giá cao (≥ 7 tỷ)",
+        "count": 1479,
+        "rmse": 1.5403,
+        "mae": 1.1804,
+        "medae": 0.9394,
+        "r2": -1.8655,
+        "mape": 13.67,
+        "within_10pct": 0.4408,
+        "within_20pct": 0.7762,
+        "within_1ty": 0.5287
+      },
+      {
+        "segment": "TP. Hồ Chí Minh",
+        "count": 1759,
+        "rmse": 1.2207,
+        "mae": 0.9214,
+        "medae": 0.7042,
+        "r2": 0.6582,
+        "mape": 17.58,
+        "within_10pct": 0.4412,
+        "within_20pct": 0.7243,
+        "within_1ty": 0.6492
+      },
+      {
+        "segment": "Hà Nội",
+        "count": 1583,
+        "rmse": 1.2439,
+        "mae": 0.9523,
+        "medae": 0.7705,
+        "r2": 0.6114,
+        "mape": 17.4,
+        "within_10pct": 0.3973,
+        "within_20pct": 0.7031,
+        "within_1ty": 0.6241
+      },
+      {
+        "segment": "Tỉnh/TP khác",
+        "count": 1191,
+        "rmse": 1.453,
+        "mae": 1.0644,
+        "medae": 0.8188,
+        "r2": 0.6126,
+        "mape": 26.71,
+        "within_10pct": 0.3123,
+        "within_20pct": 0.5432,
+        "within_1ty": 0.597
+      }
+    ],
+    "mlp": [
+      {
+        "segment": "Giá thấp (< 4 tỷ)",
+        "count": 1019,
+        "rmse": 1.1715,
+        "mae": 0.7952,
+        "medae": 0.5149,
+        "r2": -1.3282,
+        "mape": 30.67,
+        "within_10pct": 0.2964,
+        "within_20pct": 0.5329,
+        "within_1ty": 0.737
+      },
+      {
+        "segment": "Giá trung bình (4–7 tỷ)",
+        "count": 2035,
+        "rmse": 1.0234,
+        "mae": 0.7894,
+        "medae": 0.6327,
+        "r2": -0.4607,
+        "mape": 14.68,
+        "within_10pct": 0.4486,
+        "within_20pct": 0.7396,
+        "within_1ty": 0.7042
+      },
+      {
+        "segment": "Giá cao (≥ 7 tỷ)",
+        "count": 1479,
+        "rmse": 1.5,
+        "mae": 1.1205,
+        "medae": 0.8372,
+        "r2": -1.7172,
+        "mape": 12.99,
+        "within_10pct": 0.4895,
+        "within_20pct": 0.7931,
+        "within_1ty": 0.5713
+      },
+      {
+        "segment": "TP. Hồ Chí Minh",
+        "count": 1759,
+        "rmse": 1.179,
+        "mae": 0.8675,
+        "medae": 0.6382,
+        "r2": 0.6812,
+        "mape": 15.85,
+        "within_10pct": 0.4719,
+        "within_20pct": 0.7572,
+        "within_1ty": 0.689
+      },
+      {
+        "segment": "Hà Nội",
+        "count": 1583,
+        "rmse": 1.2171,
+        "mae": 0.9124,
+        "medae": 0.7114,
+        "r2": 0.6279,
+        "mape": 16.3,
+        "within_10pct": 0.4321,
+        "within_20pct": 0.7296,
+        "within_1ty": 0.6456
+      },
+      {
+        "segment": "Tỉnh/TP khác",
+        "count": 1191,
+        "rmse": 1.3175,
+        "mae": 0.9268,
+        "medae": 0.6693,
+        "r2": 0.6815,
+        "mape": 22.38,
+        "within_10pct": 0.3568,
+        "within_20pct": 0.6163,
+        "within_1ty": 0.6675
+      }
+    ],
+    "hgb": [
+      {
+        "segment": "Giá thấp (< 4 tỷ)",
+        "count": 1019,
+        "rmse": 1.1309,
+        "mae": 0.7558,
+        "medae": 0.4779,
+        "r2": -1.1694,
+        "mape": 29.13,
+        "within_10pct": 0.3278,
+        "within_20pct": 0.5407,
+        "within_1ty": 0.7566
+      },
+      {
+        "segment": "Giá trung bình (4–7 tỷ)",
+        "count": 2035,
+        "rmse": 0.9916,
+        "mae": 0.7542,
+        "medae": 0.5767,
+        "r2": -0.3713,
+        "mape": 14.02,
+        "within_10pct": 0.4875,
+        "within_20pct": 0.7641,
+        "within_1ty": 0.7258
+      },
+      {
+        "segment": "Giá cao (≥ 7 tỷ)",
+        "count": 1479,
+        "rmse": 1.4649,
+        "mae": 1.0717,
+        "medae": 0.7897,
+        "r2": -1.5918,
+        "mape": 12.42,
+        "within_10pct": 0.5145,
+        "within_20pct": 0.8012,
+        "within_1ty": 0.5882
+      },
+      {
+        "segment": "TP. Hồ Chí Minh",
+        "count": 1759,
+        "rmse": 1.1405,
+        "mae": 0.8288,
+        "medae": 0.5876,
+        "r2": 0.7017,
+        "mape": 15.26,
+        "within_10pct": 0.5082,
+        "within_20pct": 0.7669,
+        "within_1ty": 0.6947
+      },
+      {
+        "segment": "Hà Nội",
+        "count": 1583,
+        "rmse": 1.1838,
+        "mae": 0.8727,
+        "medae": 0.6398,
+        "r2": 0.6481,
+        "mape": 15.69,
+        "within_10pct": 0.4548,
+        "within_20pct": 0.7505,
+        "within_1ty": 0.6822
+      },
+      {
+        "segment": "Tỉnh/TP khác",
+        "count": 1191,
+        "rmse": 1.2868,
+        "mae": 0.8821,
+        "medae": 0.5681,
+        "r2": 0.6962,
+        "mape": 20.91,
+        "within_10pct": 0.3971,
+        "within_20pct": 0.6331,
+        "within_1ty": 0.6851
+      }
+    ],
+    "rf": [
+      {
+        "segment": "Giá thấp (< 4 tỷ)",
+        "count": 1019,
+        "rmse": 1.235,
+        "mae": 0.8389,
+        "medae": 0.5223,
+        "r2": -1.5873,
+        "mape": 33.67,
+        "within_10pct": 0.3327,
+        "within_20pct": 0.5201,
+        "within_1ty": 0.7085
+      },
+      {
+        "segment": "Giá trung bình (4–7 tỷ)",
+        "count": 2035,
+        "rmse": 0.9246,
+        "mae": 0.6953,
+        "medae": 0.5158,
+        "r2": -0.1921,
+        "mape": 13.04,
+        "within_10pct": 0.5253,
+        "within_20pct": 0.7823,
+        "within_1ty": 0.7622
+      },
+      {
+        "segment": "Giá cao (≥ 7 tỷ)",
+        "count": 1479,
+        "rmse": 1.4852,
+        "mae": 1.0891,
+        "medae": 0.7837,
+        "r2": -1.6639,
+        "mape": 12.54,
+        "within_10pct": 0.5159,
+        "within_20pct": 0.8053,
+        "within_1ty": 0.5855
+      },
+      {
+        "segment": "TP. Hồ Chí Minh",
+        "count": 1759,
+        "rmse": 1.1526,
+        "mae": 0.8385,
+        "medae": 0.5968,
+        "r2": 0.6953,
+        "mape": 15.88,
+        "within_10pct": 0.5014,
+        "within_20pct": 0.7646,
+        "within_1ty": 0.6998
+      },
+      {
+        "segment": "Hà Nội",
+        "count": 1583,
+        "rmse": 1.1634,
+        "mae": 0.8445,
+        "medae": 0.6007,
+        "r2": 0.6601,
+        "mape": 15.51,
+        "within_10pct": 0.4984,
+        "within_20pct": 0.7631,
+        "within_1ty": 0.6854
+      },
+      {
+        "segment": "Tỉnh/TP khác",
+        "count": 1191,
+        "rmse": 1.3205,
+        "mae": 0.8973,
+        "medae": 0.5899,
+        "r2": 0.68,
+        "mape": 22.59,
+        "within_10pct": 0.4198,
+        "within_20pct": 0.6381,
+        "within_1ty": 0.691
+      }
+    ]
+  },
+  "val_permutation_importance": {
+    "linear_sgd": [
+      {
+        "feature": "log1p_est_price_ward",
+        "delta_rmse_mean": 0.66942,
+        "delta_rmse_std": 0.0216
+      },
+      {
+        "feature": "log1p_AccessRoad",
+        "delta_rmse_mean": 0.48518,
+        "delta_rmse_std": 0.00599
+      },
+      {
+        "feature": "Furniture state_Full",
+        "delta_rmse_mean": 0.22473,
+        "delta_rmse_std": 0.01363
+      },
+      {
+        "feature": "city_Hà Nội",
+        "delta_rmse_mean": 0.21555,
+        "delta_rmse_std": 0.00898
+      },
+      {
+        "feature": "oof_city_ppm2",
+        "delta_rmse_mean": 0.15993,
+        "delta_rmse_std": 0.00353
+      },
+      {
+        "feature": "log1p_est_price_district",
+        "delta_rmse_mean": 0.15886,
+        "delta_rmse_std": 0.00396
+      },
+      {
+        "feature": "Area",
+        "delta_rmse_mean": 0.1467,
+        "delta_rmse_std": 0.00853
+      },
+      {
+        "feature": "addr_ridge_ppm2",
+        "delta_rmse_mean": 0.14285,
+        "delta_rmse_std": 0.00594
+      },
+      {
+        "feature": "Furniture state_Basic",
+        "delta_rmse_mean": 0.14206,
+        "delta_rmse_std": 0.00293
+      },
+      {
+        "feature": "Floors",
+        "delta_rmse_mean": 0.13989,
+        "delta_rmse_std": 0.00815
+      },
+      {
+        "feature": "Legal status_Have certificate",
+        "delta_rmse_mean": 0.1147,
+        "delta_rmse_std": 0.00384
+      },
+      {
+        "feature": "addr_ridge_price",
+        "delta_rmse_mean": 0.10305,
+        "delta_rmse_std": 0.00222
+      },
+      {
+        "feature": "city_Hồ Chí Minh",
+        "delta_rmse_mean": 0.09528,
+        "delta_rmse_std": 0.00341
+      },
+      {
+        "feature": "Access Road",
+        "delta_rmse_mean": 0.09377,
+        "delta_rmse_std": 0.00268
+      },
+      {
+        "feature": "Legal status_Missing",
+        "delta_rmse_mean": 0.08192,
+        "delta_rmse_std": 0.00389
+      }
+    ],
+    "mlp": [
+      {
+        "feature": "log1p_est_price_ward",
+        "delta_rmse_mean": 0.32667,
+        "delta_rmse_std": 0.01654
+      },
+      {
+        "feature": "log1p_AccessRoad",
+        "delta_rmse_mean": 0.26722,
+        "delta_rmse_std": 0.00495
+      },
+      {
+        "feature": "Furniture state_Full",
+        "delta_rmse_mean": 0.19245,
+        "delta_rmse_std": 0.00826
+      },
+      {
+        "feature": "city_Hồ Chí Minh",
+        "delta_rmse_mean": 0.13657,
+        "delta_rmse_std": 0.00612
+      },
+      {
+        "feature": "Furniture state_Basic",
+        "delta_rmse_mean": 0.11874,
+        "delta_rmse_std": 0.00062
+      },
+      {
+        "feature": "addr_ridge_ppm2",
+        "delta_rmse_mean": 0.10901,
+        "delta_rmse_std": 0.00382
+      },
+      {
+        "feature": "Floors",
+        "delta_rmse_mean": 0.09128,
+        "delta_rmse_std": 0.00429
+      },
+      {
+        "feature": "oof_street_ppm2",
+        "delta_rmse_mean": 0.08684,
+        "delta_rmse_std": 0.00381
+      },
+      {
+        "feature": "city_Hà Nội",
+        "delta_rmse_mean": 0.0864,
+        "delta_rmse_std": 0.00558
+      },
+      {
+        "feature": "Legal status_Have certificate",
+        "delta_rmse_mean": 0.08637,
+        "delta_rmse_std": 0.00154
+      },
+      {
+        "feature": "te_district_price",
+        "delta_rmse_mean": 0.08566,
+        "delta_rmse_std": 0.00071
+      },
+      {
+        "feature": "addr_ridge_price",
+        "delta_rmse_mean": 0.07791,
+        "delta_rmse_std": 0.0033
+      },
+      {
+        "feature": "Legal status_Missing",
+        "delta_rmse_mean": 0.0714,
+        "delta_rmse_std": 0.00618
+      },
+      {
+        "feature": "log1p_est_price_district",
+        "delta_rmse_mean": 0.07123,
+        "delta_rmse_std": 0.00245
+      },
+      {
+        "feature": "est_price_street",
+        "delta_rmse_mean": 0.06356,
+        "delta_rmse_std": 0.00239
+      }
+    ],
+    "hgb": [
+      {
+        "feature": "est_price_street",
+        "delta_rmse_mean": 0.39271,
+        "delta_rmse_std": 0.00114
+      },
+      {
+        "feature": "addr_ridge_price",
+        "delta_rmse_mean": 0.10762,
+        "delta_rmse_std": 0.00443
+      },
+      {
+        "feature": "addr_ridge_ppm2",
+        "delta_rmse_mean": 0.05389,
+        "delta_rmse_std": 0.00165
+      },
+      {
+        "feature": "Access Road",
+        "delta_rmse_mean": 0.05339,
+        "delta_rmse_std": 0.00108
+      },
+      {
+        "feature": "est_price_ward",
+        "delta_rmse_mean": 0.03746,
+        "delta_rmse_std": 0.00158
+      },
+      {
+        "feature": "usable_area",
+        "delta_rmse_mean": 0.03589,
+        "delta_rmse_std": 0.00116
+      },
+      {
+        "feature": "Floors",
+        "delta_rmse_mean": 0.02568,
+        "delta_rmse_std": 0.00312
+      },
+      {
+        "feature": "log1p_AccessRoad",
+        "delta_rmse_mean": 0.02359,
+        "delta_rmse_std": 0.00177
+      },
+      {
+        "feature": "log1p_est_price_ward",
+        "delta_rmse_mean": 0.0209,
+        "delta_rmse_std": 0.00333
+      },
+      {
+        "feature": "log1p_freq_ward",
+        "delta_rmse_mean": 0.0147,
+        "delta_rmse_std": 0.00242
+      },
+      {
+        "feature": "oof_street_ppm2",
+        "delta_rmse_mean": 0.0141,
+        "delta_rmse_std": 0.0006
+      },
+      {
+        "feature": "te_street_price",
+        "delta_rmse_mean": 0.01316,
+        "delta_rmse_std": 0.00255
+      },
+      {
+        "feature": "Bathrooms",
+        "delta_rmse_mean": 0.01092,
+        "delta_rmse_std": 0.00094
+      },
+      {
+        "feature": "Legal status_Sale contract",
+        "delta_rmse_mean": 0.0096,
+        "delta_rmse_std": 0.00116
+      },
+      {
+        "feature": "log1p_freq_district",
+        "delta_rmse_mean": 0.00927,
+        "delta_rmse_std": 0.00089
+      }
+    ]
+  }
+}

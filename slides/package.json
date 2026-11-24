@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "slidev --open",
     "build": "slidev build",
-    "export": "slidev export --output exports/final-project-slides.pdf",
-    "export:clicks": "slidev export --with-clicks --output exports/final-project-slides-clicks.pdf"
+    "export": "slidev export --wait 1500 --wait-until networkidle --output exports/final-project-slides.pdf",
+    "export:clicks": "slidev export --wait 1500 --wait-until networkidle --with-clicks --output exports/final-project-slides-clicks.pdf"
   },
   "trustedDependencies": [
     "playwright-chromium"

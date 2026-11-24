@@ -5,43 +5,43 @@
 <div class="grid grid-cols-12 gap-4 items-start mt-1">
   <div class="col-span-6 space-y-2">
     <div class="card py-1.5">
-      <h2>Nhóm Tuyến tính &amp; Mạng Nơ-ron</h2>
+      <h2>Hướng 1 (Linear SGD) vs. Hướng 2 (MLP Adam)</h2>
       <ul class="text-xs mb-0">
-        <li><strong>Ưu điểm:</strong> <span class="todo-pill">[TODO: Ridge cực nhanh, dễ diễn giải; MLP học biểu diễn liên tục mượt]</span></li>
-        <li><strong>Hạn chế:</strong> <span class="todo-pill">[TODO: Tuyến tính khó nắm tương tác phi tuyến Diện tích × Vị trí]</span></li>
+        <li><strong>Linear (SGD):</strong> Minh bạch theo công thức gradient MSE (346 tham số), nhưng <em>high bias</em> do chỉ ghép tuyến tính (Test RMSE <code>1.2936 tỷ</code>).</li>
+        <li><strong>MLP (Adam):</strong> Một tầng ẩn <code>128 ReLU + Dropout(0.1)</code> giảm <strong>0.0636 tỷ RMSE</strong> (<code>1.2300 tỷ</code>) và ổn định đa seed (<code>1.2079 ± 0.0032</code>).</li>
       </ul>
     </div>
     <div class="card py-1.5">
-      <h2>Nhóm Cây (RF / GBDT)</h2>
+      <h2>Đối chiếu Tham chiếu Cây (HGB / RF)</h2>
       <ul class="text-xs mb-0">
-        <li><strong>Ưu điểm:</strong> <span class="todo-pill">[TODO: RMSE thấp nhất, chống nhiễu tốt, xử lý tự nhiên giá trị NaN]</span></li>
-        <li><strong>Hạn chế:</strong> <span class="todo-pill">[TODO: Không ngoại suy vượt biên nếu gặp tổ hợp giá cực hiếm]</span></li>
+        <li><strong>Hiệu năng:</strong> <code>HGB (1.1955)</code> và <code>RF (1.2026)</code> dẫn trước <code>MLP</code> <strong>0.0345 tỷ</strong> nhờ chia ngưỡng trực tiếp theo đơn giá đường/phường.</li>
+        <li><strong>Giới hạn:</strong> Khó giải thích bằng cơ chế backpropagation &amp; tối ưu gradient chuẩn của môn học.</li>
       </ul>
     </div>
     <div class="callout py-1.5 text-xs">
-      <strong>Đánh đổi (Trade-off):</strong> <span class="todo-pill">[TODO: Độ chính xác (RMSE/R²) vs. tốc độ suy luận và độ phức tạp triển khai]</span>
+      <strong>Đánh đổi (Trade-off):</strong> <code>MLP + Adam</code> train chỉ <strong>13.23s</strong> trên T4 (nhanh hơn SGD 35.4s vì dừng sớm ep 28) và giữ <strong>97.6% R²</strong> của <code>HGB</code>.
     </div>
   </div>
 
   <div class="col-span-6 space-y-2">
     <FigureSlot
+      src="/figures/residual_analysis.png"
       expectedFile="public/figures/residual_analysis.png"
-      caption="Hình 5: Phân bố Phần dư (y_pred - y_true) &amp; Feature Importance"
-      hint="Biểu đồ phần dư theo mức giá/khu vực và top đặc trưng quan trọng nhất."
+      caption="Hình 5: Phân bố Phần dư trên Test &amp; Top 8 Đặc trưng Quan trọng (MLP)"
       maxHeight="225px"
     />
     <div class="card py-2">
       <ul class="text-xs mb-0">
-        <li><strong>Nguyên nhân sai số lớn:</strong> <span class="todo-pill">[TODO: Giá trị thiếu mặt tiền/ngõ, biến động giá rao bán giữa môi giới, đặc trưng vị trí vi mô chưa có trong tin]</span></li>
+        <li><strong>Nguyên nhân sai số lớn:</strong> Phần dư lớn tập trung ở tin thiếu Mặt tiền/Đường vào, nhiễu định giá rao bán và nhà cao cấp <code>≥ 7 tỷ</code> thiếu mô tả nội thất chi tiết.</li>
       </ul>
     </div>
   </div>
 </div>
 
 <!--
-[5:25 – 6:15 | ~50s]
-- So sánh giữa các mô hình cho thấy nhóm mô hình cây (RF/GBDT) xử lý vượt trội các tương tác phi tuyến giữa diện tích và khu vực.
-- Khi phân tích phần dư ở Hình 5, sai số tập trung chủ yếu ở các tin thiếu thông tin mặt tiền/đường vào hoặc các căn có mức giá rao bán chủ quan chênh lệch lớn so với mặt bằng khu vực.
+[5:15 – 6:05 | ~50s]
+- So sánh giữa hai hướng chính cho thấy bổ sung phi tuyến qua MLP 128 ReLU giảm rõ rệt sai số so với Linear SGD, thu hẹp khoảng cách với mốc cây HGB xuống chỉ còn 0.0345 tỷ.
+- Phân tích phần dư và Permutation Importance ở Hình 5 khẳng định nhóm đặc trưng đơn giá theo phường/đường và độ rộng ngõ vào chi phối mạnh nhất, trong khi sai số lớn tập trung ở tin thiếu thông tin hoặc giá cao thiếu tiện ích vi mô.
 -->
 
 ---
@@ -50,22 +50,24 @@
 
 # Tác động Tiền xử lý &amp; Thách thức Thực tế
 
-<div class="grid grid-cols-12 gap-4 items-start mt-1">
-  <div class="col-span-6 space-y-2">
-  <div class="card py-2">
-    <h2>Tác động của Feature Engineering</h2>
+<div class="grid grid-cols-12 gap-3 items-start mt-1">
+  <div class="col-span-6 space-y-1.5">
+  <div class="card py-1.5 px-2.5 compact-table">
+    <h2>Tác động Feature Engineering (Val)</h2>
 
-| Giai đoạn tiền xử lý | Val RMSE | Val R² | Nhận xét |
-|---|---|---|---|
-| `P0_numeric` (6 cột số) | `--` | `--` | Chỉ biết quy mô, thiếu vị trí |
-| `P4_geo_priors` (+ Địa chỉ &amp; Priors) | `--` | `--` | `[TODO]` |
+| Tiền xử lý | MLP RMSE | MLP R² | Linear SGD (R²) |
+|---|---:|---:|---:|
+| P0 (6 biến số) | 1.8541 | 0.3006 | 1.9956 (0.1897) |
+| P2 (+ Impute/Tỉ lệ) | 1.3151 | 0.6481 | 1.4210 (0.5891) |
+| P4_compact (103) | 1.2173 | 0.6985 | 1.2931 (0.6598) |
+| **P4_geo_priors (345)** | **1.2123** | **0.7010** | **1.2830 (0.6651)** |
 
   </div>
     <FigureSlot
+      src="/figures/preprocessing_impact.png"
       expectedFile="public/figures/preprocessing_impact.png"
-      caption="Hình 6: Mức giảm RMSE và tăng R² từ P0 đến P4"
-      hint="Biểu đồ cột đối chiếu RMSE / R² qua các bước P0 → P2 → P3 → P4."
-      maxHeight="195px"
+      caption="Hình 6: Mức giảm Val RMSE từ P0 đến P4 trên Linear SGD, MLP &amp; HGB"
+      maxHeight="168px"
     />
   </div>
 
@@ -80,14 +82,14 @@
       <strong>Giải pháp:</strong> Chuẩn hóa Unicode NFC, chuẩn hóa tên tỉnh thành và kết hợp OOF Target Encoding + TF-IDF Ridge.
     </div>
     <div class="callout callout-amber text-xs">
-      <strong>3. Tin đăng lặp giá nhiễu (1,631 nhóm môi giới):</strong><br/>
+      <strong>3. Tin đăng lặp giá nhiễu (1,708 cụm môi giới):</strong><br/>
       <strong>Giải pháp:</strong> Áp dụng <code>StratifiedGroupKFold</code> theo khóa bất động sản để không rò rỉ sang Val/Test.
     </div>
   </div>
 </div>
 
 <!--
-[6:15 – 7:00 | ~45s]
-- Bảng đối chứng cho thấy phần Feature Engineering từ chuỗi địa chỉ và đơn giá khu vực giúp giảm mạnh RMSE và nâng R² vượt bậc so với việc chỉ dùng 6 biến số ban đầu.
-- Bên cạnh đó, nhóm xử lý triệt để ba thách thức thực tế của dữ liệu web-scraped là dữ liệu thiếu nặng, lỗi Unicode địa chỉ và tin đăng lặp gây rò rỉ dữ liệu.
+[6:05 – 6:50 | ~45s]
+- Bảng đối chứng và Hình 6 cho thấy Feature Engineering từ P0 lên P4 giúp giảm 34.6% RMSE trên MLP và 35.7% trên Linear SGD — tác động mạnh hơn hẳn việc chỉ tinh chỉnh siêu tham số.
+- Ngoài ra, nhóm giải quyết triệt để ba bẫy dữ liệu thực tế gồm thiếu dữ liệu nặng, nhiễu Unicode địa chỉ và 1,631 cụm tin đăng lặp của môi giới.
 -->

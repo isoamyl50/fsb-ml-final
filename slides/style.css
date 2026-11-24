@@ -126,6 +126,19 @@
   background-color: #f8fafc;
 }
 
+.slidev-layout .compact-table table {
+  font-size: 0.72rem;
+  margin: 0.2rem 0;
+}
+
+.slidev-layout .compact-table th {
+  padding: 0.26rem 0.36rem;
+}
+
+.slidev-layout .compact-table td {
+  padding: 0.22rem 0.36rem;
+}
+
 /* Rubric section pill tag */
 .slidev-layout .section-tag {
   display: inline-block;

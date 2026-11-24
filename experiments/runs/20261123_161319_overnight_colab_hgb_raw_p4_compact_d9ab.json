@@ -1,0 +1,54 @@
+{
+  "run_id": "20261123_161319_overnight_colab_hgb_raw_p4_compact_d9ab",
+  "timestamp_utc": "2026-11-23T16:13:19.606209+00:00",
+  "author": "overnight_colab",
+  "git_commit": "uncommitted",
+  "git_dirty": null,
+  "hardware": "GPU (Tesla T4)",
+  "seed": 42,
+  "outlier_filter": false,
+  "task": "regression",
+  "target": {
+    "name": "raw",
+    "unit": "billion_vnd"
+  },
+  "features": {
+    "name": "P4_compact",
+    "n_features": 103,
+    "scaled": false,
+    "preserve_nans": true
+  },
+  "model": {
+    "name": "hgb",
+    "params": {}
+  },
+  "splits": {
+    "path": "splits_v1.json",
+    "n_train": 21161,
+    "n_val": 4535,
+    "n_test": 4533
+  },
+  "metrics": {
+    "val": {
+      "model": "hgb",
+      "rmse": 1.1711,
+      "mae": 0.8473,
+      "medae": 0.6175,
+      "r2": 0.721,
+      "mape": 16.92,
+      "within_10pct": 0.4569,
+      "within_20pct": 0.7354,
+      "within_1ty": 0.6942,
+      "residual_quantiles": {
+        "p05": -2.0296,
+        "p25": -0.6369,
+        "p50": -0.0236,
+        "p75": 0.5997,
+        "p95": 1.7114
+      }
+    },
+    "test": null
+  },
+  "train_seconds": 9.819,
+  "notes": "[ABL_HGB_P4_compact] Preprocessing ablation HGB ref on P4_compact"
+}

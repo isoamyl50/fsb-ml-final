@@ -590,7 +590,12 @@ class P3TfidfTargetEncRecipe(FeatureRecipe):
         self._te_state = _fit_hierarchical_target_means(cities, districts, wards, streets, p_arr)
         svd_mat = self._svd.fit_transform(self._tfidf.fit_transform(addr_texts)).astype(np.float32)
 
-        extra = np.hstack([oof_te, svd_mat]).astype(np.float32)
+        extra = np.nan_to_num(
+            np.hstack([oof_te, svd_mat]).astype(np.float32),
+            nan=0.0,
+            posinf=0.0,
+            neginf=0.0,
+        )
         if self.scale_numeric:
             extra = self._extra_scaler.fit_transform(extra).astype(np.float32)
 
@@ -604,7 +609,12 @@ class P3TfidfTargetEncRecipe(FeatureRecipe):
         _, _, cities, districts, wards, streets, addr_texts = _extract_geo_and_cat(rows)
         te_mat = _apply_hierarchical_target_means(cities, districts, wards, streets, self._te_state)
         svd_mat = self._svd.transform(self._tfidf.transform(addr_texts)).astype(np.float32)
-        extra = np.hstack([te_mat, svd_mat]).astype(np.float32)
+        extra = np.nan_to_num(
+            np.hstack([te_mat, svd_mat]).astype(np.float32),
+            nan=0.0,
+            posinf=0.0,
+            neginf=0.0,
+        )
         if self.scale_numeric:
             extra = self._extra_scaler.transform(extra).astype(np.float32)
         return np.hstack([x_p2, extra]).astype(np.float32)
@@ -734,8 +744,13 @@ class P4GeoPriorsRecipe(FeatureRecipe):
         self._addr_ridge_ppm2.fit(x_all_txt, ppm2)
 
         freq_mat = self._compute_freq_feats(cities, districts, wards, streets)
-        extra = np.column_stack([oof_priors, oof_txt_price, oof_txt_ppm2, freq_mat]).astype(
-            np.float32
+        extra = np.nan_to_num(
+            np.column_stack([oof_priors, oof_txt_price, oof_txt_ppm2, freq_mat]).astype(
+                np.float32
+            ),
+            nan=0.0,
+            posinf=0.0,
+            neginf=0.0,
         )
         if self.scale_numeric:
             extra = self._extra_scaler.fit_transform(extra).astype(np.float32)
@@ -773,7 +788,12 @@ class P4GeoPriorsRecipe(FeatureRecipe):
         txt_ppm2 = self._addr_ridge_ppm2.predict(x_txt).astype(np.float32)
         freq_mat = self._compute_freq_feats(cities, districts, wards, streets)
 
-        extra = np.column_stack([priors_mat, txt_price, txt_ppm2, freq_mat]).astype(np.float32)
+        extra = np.nan_to_num(
+            np.column_stack([priors_mat, txt_price, txt_ppm2, freq_mat]).astype(np.float32),
+            nan=0.0,
+            posinf=0.0,
+            neginf=0.0,
+        )
         if self.scale_numeric:
             extra = self._extra_scaler.transform(extra).astype(np.float32)
         return np.hstack([x_p3, extra]).astype(np.float32)

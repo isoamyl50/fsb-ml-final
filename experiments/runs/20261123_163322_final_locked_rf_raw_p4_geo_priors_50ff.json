@@ -1,0 +1,71 @@
+{
+  "run_id": "20261123_163322_final_locked_rf_raw_p4_geo_priors_50ff",
+  "timestamp_utc": "2026-11-23T16:33:22.757944+00:00",
+  "author": "final_locked",
+  "git_commit": "uncommitted",
+  "git_dirty": null,
+  "hardware": "GPU (Tesla T4)",
+  "seed": 42,
+  "outlier_filter": false,
+  "task": "regression",
+  "target": {
+    "name": "raw",
+    "unit": "billion_vnd"
+  },
+  "features": {
+    "name": "P4_geo_priors",
+    "n_features": 345,
+    "scaled": false,
+    "preserve_nans": false
+  },
+  "model": {
+    "name": "rf",
+    "params": {}
+  },
+  "splits": {
+    "path": "splits_v1.json",
+    "n_train": 21161,
+    "n_val": 4535,
+    "n_test": 4533
+  },
+  "metrics": {
+    "val": {
+      "model": "rf",
+      "rmse": 1.1932,
+      "mae": 0.8625,
+      "medae": 0.6302,
+      "r2": 0.7103,
+      "mape": 17.87,
+      "within_10pct": 0.4626,
+      "within_20pct": 0.7275,
+      "within_1ty": 0.6822,
+      "residual_quantiles": {
+        "p05": -2.0747,
+        "p25": -0.6308,
+        "p50": 0.0188,
+        "p75": 0.6295,
+        "p95": 1.7727
+      }
+    },
+    "test": {
+      "model": "rf",
+      "rmse": 1.2026,
+      "mae": 0.8561,
+      "medae": 0.5966,
+      "r2": 0.7032,
+      "mape": 17.51,
+      "within_10pct": 0.4789,
+      "within_20pct": 0.7309,
+      "within_1ty": 0.6925,
+      "residual_quantiles": {
+        "p05": -2.0498,
+        "p25": -0.5548,
+        "p50": 0.073,
+        "p75": 0.6188,
+        "p95": 1.8696
+      }
+    }
+  },
+  "train_seconds": 33.168,
+  "notes": "FINAL LOCKED TEST | Random Forest (P4_geo_priors, External Tree Ref)"
+}

@@ -1,0 +1,54 @@
+{
+  "run_id": "20261123_161258_overnight_colab_hgb_raw_p2_domain_1237",
+  "timestamp_utc": "2026-11-23T16:12:58.733645+00:00",
+  "author": "overnight_colab",
+  "git_commit": "uncommitted",
+  "git_dirty": null,
+  "hardware": "GPU (Tesla T4)",
+  "seed": 42,
+  "outlier_filter": false,
+  "task": "regression",
+  "target": {
+    "name": "raw",
+    "unit": "billion_vnd"
+  },
+  "features": {
+    "name": "P2_domain",
+    "n_features": 306,
+    "scaled": false,
+    "preserve_nans": true
+  },
+  "model": {
+    "name": "hgb",
+    "params": {}
+  },
+  "splits": {
+    "path": "splits_v1.json",
+    "n_train": 21161,
+    "n_val": 4535,
+    "n_test": 4533
+  },
+  "metrics": {
+    "val": {
+      "model": "hgb",
+      "rmse": 1.3027,
+      "mae": 0.9727,
+      "medae": 0.7522,
+      "r2": 0.6547,
+      "mape": 19.94,
+      "within_10pct": 0.383,
+      "within_20pct": 0.6759,
+      "within_1ty": 0.628,
+      "residual_quantiles": {
+        "p05": -2.1882,
+        "p25": -0.7559,
+        "p50": 0.0321,
+        "p75": 0.751,
+        "p95": 2.013
+      }
+    },
+    "test": null
+  },
+  "train_seconds": 26.323,
+  "notes": "[ABL_HGB_P2_domain] Preprocessing ablation HGB ref on P2_domain"
+}

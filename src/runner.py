@@ -11,7 +11,7 @@ import time
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any, Callable, Mapping, Sequence
 
 import numpy as np
 
@@ -103,6 +103,8 @@ def _fit_model(
     y_train_t: np.ndarray,
     X_val: np.ndarray,
     y_val_t: np.ndarray,
+    inverse_fn: Callable[[np.ndarray], np.ndarray] | None = None,
+    y_val_orig: np.ndarray | None = None,
 ) -> None:
     if spec_name == "lgbm":
         import lightgbm as lgb
@@ -123,8 +125,14 @@ def _fit_model(
             early_stopping_rounds=50,
             verbose=False,
         )
-    elif spec_name == "mlp":
-        clf.fit(X_train, y_train_t, eval_set=(X_val, y_val_t))
+    elif spec_name in ("mlp", "linear_sgd"):
+        clf.fit(
+            X_train,
+            y_train_t,
+            eval_set=(X_val, y_val_t),
+            inverse_fn=inverse_fn,
+            y_val_orig=y_val_orig,
+        )
     else:
         clf.fit(X_train, y_train_t)
 
@@ -151,7 +159,8 @@ def run_and_log(
     csv_path: str | Path | None = None,
     splits_path: str | Path = EXPERIMENTS_SPLITS_PATH,
     runs_dir: str | Path = EXPERIMENTS_RUNS_DIR,
-) -> dict[str, Any]:
+    return_details: bool = False,
+) -> dict[str, Any] | tuple[dict[str, Any], dict[str, Any]]:
     """Execute one reproducible regression run on the frozen split and log JSON."""
     rows = load_raw_records(csv_path)
     train_idx, val_idx, test_idx = load_frozen_splits(path=splits_path, rows=rows)
@@ -187,7 +196,16 @@ def run_and_log(
     reg = spec.builder(random_state=seed, **param_dict)
 
     t0 = time.perf_counter()
-    _fit_model(spec.name, reg, X_train, y_train_t, X_val, y_val_t)
+    _fit_model(
+        spec.name,
+        reg,
+        X_train,
+        y_train_t,
+        X_val,
+        y_val_t,
+        inverse_fn=lambda pred: tfm.inverse(pred, val_areas),
+        y_val_orig=val_prices,
+    )
     train_seconds = round(time.perf_counter() - t0, 3)
 
     val_pred_t = reg.predict(X_val)
@@ -200,6 +218,7 @@ def run_and_log(
     )
 
     test_metrics: dict[str, Any] | None = None
+    test_pred_price: np.ndarray | None = None
     if eval_test:
         X_test = recipe.transform(test_rows)
         test_pred_t = reg.predict(X_test)
@@ -269,5 +288,19 @@ def run_and_log(
         if mirror_to_drive and _is_drive_mounted():
             DRIVE_RUNS_DIR.mkdir(parents=True, exist_ok=True)
             shutil.copy2(out_path, DRIVE_RUNS_DIR / out_path.name)
+
+    if return_details:
+        details = {
+            "val_pred": val_pred_price,
+            "test_pred": test_pred_price,
+            "model": reg,
+            "recipe": recipe,
+            "X_val": X_val,
+            "val_prices": val_prices,
+            "test_prices": test_prices,
+            "val_areas": val_areas,
+            "test_areas": test_areas,
+        }
+        return payload, details
 
     return payload

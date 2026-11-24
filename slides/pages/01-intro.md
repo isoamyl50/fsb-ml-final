@@ -3,21 +3,21 @@
 # Bài toán &amp; Mục tiêu Nghiên cứu
 
 <div class="grid grid-cols-12 gap-4 items-start mt-1">
-  <div class="col-span-6 space-y-2.5">
-    <div class="card">
+  <div class="col-span-6 space-y-2">
+    <div class="card py-1.5">
       <h2>Bối cảnh &amp; Bài toán</h2>
-      <ul class="text-xs mb-0">
-        <li><strong>Bài toán hồi quy (Regression):</strong> Dự đoán giá bán bất động sản (<code>Price</code>, đơn vị tỷ VND) từ thông tin cấu trúc ngôi nhà và địa chỉ tin đăng.</li>
-        <li><strong>Ý nghĩa thực tiễn:</strong> Hỗ trợ định giá tham khảo minh bạch và phát hiện bất thường giá giữa các khu vực đô thị.</li>
+      <ul class="text-xs mb-0 leading-snug">
+        <li><strong>Hồi quy liên tục (Regression):</strong> Dự đoán giá bán nhà (<code>Price</code>, tỷ VND) từ cấu trúc ngôi nhà và địa chỉ tin đăng.</li>
+        <li><strong>Ý nghĩa:</strong> Định giá tham khảo minh bạch và phát hiện bất thường giá giữa các khu vực đô thị.</li>
       </ul>
     </div>
-    <div class="card">
+    <div class="card py-1.5">
       <h2>Mục tiêu của Đồ án</h2>
-      <ul class="text-xs mb-0">
-        <li>Khám phá dữ liệu (EDA), xử lý thiếu dữ liệu nặng và chuẩn hóa văn bản tiếng Việt.</li>
-        <li>So sánh ít nhất <strong>3 họ mô hình</strong> (Tuyến tính, Tree Boosting/Bagging, Deep Learning).</li>
-        <li>Đánh giá bằng <code>RMSE</code>, <code>MAE</code>, <code>R²</code>, <code>MAPE</code> và phân tích phần dư.</li>
-        <li>Đo lường tác động của Feature Engineering &amp; rút ra bài học môn học.</li>
+      <ul class="text-xs mb-0 leading-snug">
+        <li>Khám phá dữ liệu (EDA), xử lý thiếu nặng và chuẩn hóa văn bản tiếng Việt.</li>
+        <li>Triển khai <strong>2 hướng chính</strong>: <code>Linear (SGD)</code> &amp; <code>MLP (Adam)</code>, đối chiếu tham chiếu cây <code>HGB / RF</code>.</li>
+        <li>Đánh giá bằng <code>RMSE</code>, <code>MAE</code>, <code>R²</code>, <code>MAPE</code> và phân tích phần dư Test.</li>
+        <li>Đo tác động Feature Engineering &amp; liên hệ bài học môn học.</li>
       </ul>
     </div>
   </div>
@@ -45,8 +45,8 @@
         <div class="flex items-center gap-2.5 rounded-md border border-slate-200 bg-white px-2.5 py-1.5">
           <span class="w-5 h-5 rounded-full bg-blue-700 text-white text-[11px] font-bold flex items-center justify-center shrink-0">3</span>
           <div class="leading-tight">
-            <div class="text-xs font-semibold text-slate-900">Huấn luyện Nhiều Họ Mô hình</div>
-            <div class="text-[11px] text-slate-500">Ridge, Random Forest, GBDT (HGB/LGBM/XGB), PyTorch MLP</div>
+            <div class="text-xs font-semibold text-slate-900">Huấn luyện &amp; Tối ưu Mô hình</div>
+            <div class="text-[11px] text-slate-500">Linear (Mini-batch SGD), MLP (Backprop + Adam), tham chiếu HGB / RF</div>
           </div>
         </div>
         <div class="text-center text-xs text-blue-600 font-bold leading-none">↓</div>
