@@ -51,3 +51,9 @@ slides/exports/*.pdf
 Thumbs.db
 .vscode/
 .idea/
+
+# Standalone TensorFlow approaches: data and binary checkpoints stay local
+/.venv-tf/
+/training_approaches/*/dataset/
+/training_approaches/*/output_model/
+/training_approaches/mlp_adam/results/
