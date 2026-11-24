@@ -151,8 +151,22 @@ def run_and_log(
     csv_path: str | Path | None = None,
     splits_path: str | Path = EXPERIMENTS_SPLITS_PATH,
     runs_dir: str | Path = EXPERIMENTS_RUNS_DIR,
+    approach: str | None = None,
+    run_id: str | None = None,
+    cpu_config: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Execute one reproducible regression run on the frozen split and log JSON."""
+    if approach is not None or model == "linear_sgd":
+        from .approach_1_linear_sgd.runner import run_linear_sgd
+
+        if approach not in (None, "approach_1_linear_sgd"):
+            raise ValueError(f"Unknown approach: {approach}")
+        if model != "linear_sgd" or outlier_filter or not save_run:
+            raise ValueError("Approach 1 requires linear_sgd, unfiltered splits, and saved artifacts")
+        return run_linear_sgd(author=author, features=features, target=target,
+                              params=params, cpu_config=cpu_config, eval_test=eval_test,
+                              seed=seed, notes=notes, csv_path=csv_path,
+                              splits_path=splits_path, run_id=run_id)
     rows = load_raw_records(csv_path)
     train_idx, val_idx, test_idx = load_frozen_splits(path=splits_path, rows=rows)
     if outlier_filter:

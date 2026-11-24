@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 import csv
+import io
 import json
+import math
 from pathlib import Path
 from typing import Any
 
 from .config import EXPERIMENTS_RUNS_DIR, LEADERBOARD_CSV_PATH, LEADERBOARD_MD_PATH
+from .experiment_io import atomic_write_text, file_lock
 
 
 def load_all_runs(runs_dir: str | Path = EXPERIMENTS_RUNS_DIR) -> list[dict[str, Any]]:
@@ -28,13 +31,21 @@ def build_leaderboard(
     csv_path: str | Path = LEADERBOARD_CSV_PATH,
 ) -> str:
     """Rank all regression runs by Val RMSE ascending and write Markdown & CSV tables."""
+    with file_lock(Path(md_path).with_suffix(".lock"), timeout=30):
+        return _build_leaderboard(runs_dir, md_path, csv_path)
+
+
+def _build_leaderboard(runs_dir, md_path, csv_path):
     runs = load_all_runs(runs_dir)
-    ranked = sorted(runs, key=lambda r: float(r["metrics"]["val"]["rmse"]))
+    valid = [r for r in runs if r["metrics"]["val"] is not None
+             and math.isfinite(float(r["metrics"]["val"]["rmse"]))]
+    unranked = [r for r in runs if r not in valid]
+    ranked = sorted(valid, key=lambda r: float(r["metrics"]["val"]["rmse"]))
 
     lines: list[str] = [
         "# Regression Experiment Leaderboard",
         "",
-        f"Total logged runs: **{len(ranked)}** (all evaluated in **billion VND**, ranked by `Val RMSE` ascending).",
+        f"Total logged runs: **{len(runs)}** (all evaluated in **billion VND**, ranked by `Val RMSE` ascending).",
         "",
         "| Rank | Run ID | Author | Model | Target | Features | Val RMSE | Val MAE | Val R² | Val MAPE | ±20% Acc | Test RMSE | Time (s) | Notes |",
         "|---:|---|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|",
@@ -79,17 +90,23 @@ def build_leaderboard(
             }
         )
 
+    if unranked:
+        lines.extend(["", "Runs without finite validation metrics (not ranked):", "",
+                      "| Run ID | Model | Status |", "|---|---|---|"])
+        for run in unranked:
+            lines.append(f"| `{run['run_id']}` | `{run['model']['name']}` | {run.get('status', 'unknown')} |")
     lines.append("")
     markdown = "\n".join(lines)
     md_target = Path(md_path)
     md_target.parent.mkdir(parents=True, exist_ok=True)
-    md_target.write_text(markdown, encoding="utf-8")
+    atomic_write_text(md_target, markdown)
 
     csv_target = Path(csv_path)
+    buffer = io.StringIO(newline="")
     if flat_rows:
-        with csv_target.open("w", encoding="utf-8", newline="") as fh:
-            writer = csv.DictWriter(fh, fieldnames=list(flat_rows[0].keys()))
-            writer.writeheader()
-            writer.writerows(flat_rows)
+        writer = csv.DictWriter(buffer, fieldnames=list(flat_rows[0].keys()))
+        writer.writeheader()
+        writer.writerows(flat_rows)
+    atomic_write_text(csv_target, buffer.getvalue())
 
     return markdown

@@ -1,0 +1,20 @@
+run_id: L04b
+approach: approach_1_linear_sgd
+feature_version: P4
+target_transform: raw_price
+model_name: linear_sgd
+seed: 42
+cpu_config:
+  num_threads: 4
+  num_workers: 0
+  dtype: float32
+hyperparameters:
+  batch_size: 256
+  lr: 0.05
+  weight_decay: 0.0
+  momentum: 0.0
+  loss: mse
+  optimizer: sgd
+  scaler: standard
+  max_epochs: 200
+  patience: 20

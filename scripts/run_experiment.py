@@ -44,6 +44,7 @@ def main() -> int:
         "--list", action="store_true", help="List registered targets, features, and models."
     )
     parser.add_argument("--config", type=Path, help="Optional JSON/YAML config file.")
+    parser.add_argument("--approach", choices=["approach_1_linear_sgd"])
     parser.add_argument("--author", help="Contributor name/handle (e.g. hoang, an).")
     parser.add_argument(
         "--target",
@@ -76,13 +77,13 @@ def main() -> int:
     cfg: dict[str, Any] = _load_config_file(args.config) if args.config else {}
 
     author = args.author or cfg.get("author") or "team"
-    target = args.target or cfg.get("target") or DEFAULT_TARGET_TRANSFORM
-    features = args.features or cfg.get("features")
-    model = args.model or cfg.get("model")
+    target = args.target or cfg.get("target") or cfg.get("target_transform") or DEFAULT_TARGET_TRANSFORM
+    features = args.features or cfg.get("features") or cfg.get("feature_version")
+    model = args.model or cfg.get("model") or cfg.get("model_name")
     if not (features and model):
         parser.error("--features and --model are required (via CLI or --config).")
 
-    params = dict(cfg.get("params") or {})
+    params = dict(cfg.get("params") or cfg.get("hyperparameters") or {})
     for item in args.param:
         if "=" not in item:
             parser.error(f"Invalid --param '{item}'; expected key=value")
@@ -90,7 +91,10 @@ def main() -> int:
         params[k.strip()] = parse_param_value(v)
 
     outlier_filter = bool(args.outlier_filter or cfg.get("outlier_filter", False))
-    eval_test = bool(args.eval_test or cfg.get("eval_test", False))
+    approach = args.approach or cfg.get("approach")
+    is_linear_sgd = approach == "approach_1_linear_sgd" or model == "linear_sgd"
+    # Preserve legacy config behavior for other contributors; Approach 1 requires a CLI flag.
+    eval_test = bool(args.eval_test or (not is_linear_sgd and cfg.get("eval_test", False)))
     seed = args.seed if args.seed is not None else int(cfg.get("seed", RANDOM_SEED))
     notes = args.notes if args.notes is not None else str(cfg.get("notes", ""))
 
@@ -105,11 +109,19 @@ def main() -> int:
         seed=seed,
         notes=notes,
         save_run=not args.no_save,
+        approach=approach,
+        run_id=cfg.get("run_id"),
+        cpu_config=cfg.get("cpu_config"),
     )
 
     val = result["metrics"]["val"]
+    if val is None:
+        print(f"Run {result['run_id']}: {result['status']} without valid checkpoint")
+        return 1
     test = result["metrics"].get("test")
     print(f"Run ID      : {result['run_id']}")
+    if "status" in result:
+        print(f"Status      : {result['status']}")
     print(
         f"Task        : regression | Target: {target} | "
         f"Features: {features} ({result['features']['n_features']} cols)"
@@ -126,7 +138,9 @@ def main() -> int:
     print(f"Train Time  : {result['train_seconds']:.2f}s ({result['hardware']})")
     if "saved_path" in result:
         print(f"Saved JSON  : {result['saved_path']}")
-    return 0
+    if "shared_saved_path" in result:
+        print(f"Shared JSON : {result['shared_saved_path']}")
+    return 1 if result.get("status") == "diverged" else 0
 
 
 if __name__ == "__main__":
