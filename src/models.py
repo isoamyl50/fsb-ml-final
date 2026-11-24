@@ -58,6 +58,14 @@ def list_models() -> list[str]:
     return sorted(MODEL_REGISTRY.keys())
 
 
+@register_model("linear_sgd", needs_scaling=False, supports_nans=False, accepts_val=True)
+def build_linear_sgd(random_state: int = RANDOM_SEED, **kwargs: Any) -> Any:
+    """Build the isolated CPU SGD adapter; scaling is owned by the wrapper."""
+    from .approach_1_linear_sgd.wrapper import LinearSGDWrapper
+
+    return LinearSGDWrapper(seed=random_state, **kwargs)
+
+
 def get_model_spec(name: str) -> ModelSpec:
     """Look up a registered ModelSpec by name."""
     if name not in MODEL_REGISTRY:

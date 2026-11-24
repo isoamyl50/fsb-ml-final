@@ -17,16 +17,27 @@ __pycache__/
 .jupyter_ystore.db
 
 # Model binaries & large serialized artifacts
-artifacts/*.pt
-artifacts/*.pth
-artifacts/*.ckpt
-artifacts/*.pkl
-artifacts/*.joblib
-artifacts/*.npz
-artifacts/*.parquet
+artifacts/**/*.pt
+artifacts/**/*.pth
+artifacts/**/*.ckpt
+artifacts/**/*.pkl
+artifacts/**/*.joblib
+artifacts/**/*.npz
+artifacts/**/*.parquet
+
+# Approach-local outputs (shared JSON reports remain in experiments/runs/)
+/artifacts/approach_1_linear_sgd/
+
+# Interrupted atomic writes; never ignore shared run JSONs or YAML configs
+/artifacts/**/*.tmp
+/artifacts/**/*.tmp.*
+/experiments/**/*.tmp
+/experiments/**/*.tmp.*
 
 # Generated flat CSV leaderboard (rebuild from experiments/runs/*.json)
 experiments/leaderboard.csv
+experiments/.locks/
+experiments/leaderboard.lock
 
 # Slidev generated outputs
 slides/node_modules/

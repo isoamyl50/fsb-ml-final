@@ -21,6 +21,7 @@ def evaluate_predictions(
     y_true: Sequence[float] | np.ndarray,
     y_pred: Sequence[float] | np.ndarray,
     export_to_slides: bool = False,
+    full_precision: bool = False,
 ) -> dict[str, Any]:
     """Compute regression metrics in billion VND (RMSE, MAE, MedAE, R², MAPE, tolerances)."""
     yt = np.asarray(y_true, dtype=float)
@@ -59,6 +60,11 @@ def evaluate_predictions(
             "p95": round(float(qs[4]), 4),
         },
     }
+
+    if full_precision:
+        result.update(rmse=rmse, mae=mae, medae=medae, r2=r2, mape=mape,
+                      within_10pct=within_10pct, within_20pct=within_20pct,
+                      within_1ty=within_1ty)
 
     if export_to_slides:
         scripts_str = str(SLIDES_SCRIPTS_DIR)

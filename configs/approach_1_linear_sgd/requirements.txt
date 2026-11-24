@@ -1,0 +1,4 @@
+# CPU-only PyTorch for the isolated approach (install separately from base dependencies).
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch>=2.2
+PyYAML>=6.0

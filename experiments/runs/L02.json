@@ -1,0 +1,136 @@
+{
+  "run_id": "L02",
+  "approach": "approach_1_linear_sgd",
+  "model_name": "linear_sgd",
+  "status": "completed",
+  "seed": 42,
+  "git_commit": "f39972e",
+  "git_dirty": true,
+  "timestamp_utc": "2026-11-23T14:41:49.944212+00:00",
+  "author": "team",
+  "hardware": "CPU",
+  "cpu_count": 12,
+  "feature_version": "P4",
+  "input_dim": 345,
+  "cpu_config": {
+    "num_threads": 4,
+    "num_workers": 0,
+    "dtype": "float32"
+  },
+  "hyperparameters": {
+    "batch_size": 128,
+    "lr": 0.01,
+    "weight_decay": 0.0,
+    "momentum": 0.0,
+    "loss": "mse",
+    "optimizer": "sgd",
+    "scaler": "standard",
+    "max_epochs": 200,
+    "patience": 20
+  },
+  "timing": {
+    "sec_per_epoch": 0.15688016714287056,
+    "total_train_sec": 10.98161170000094
+  },
+  "best_epoch": 50,
+  "best_val_rmse": 1.2891535405161152,
+  "train_metrics": {
+    "model": "linear_sgd",
+    "rmse": 1.2709813807282704,
+    "mae": 0.964687977084579,
+    "medae": 0.7599520683288574,
+    "r2": 0.66974930807904,
+    "mape": 20.20506878543003,
+    "within_10pct": 0.38495345210528803,
+    "within_20pct": 0.6727942913850953,
+    "within_1ty": 0.6185435470913473,
+    "residual_quantiles": {
+      "p05": -2.1167,
+      "p25": -0.7315,
+      "p50": 0.0275,
+      "p75": 0.7849,
+      "p95": 1.9958
+    }
+  },
+  "val_metrics": {
+    "model": "linear_sgd",
+    "rmse": 1.2891535399365515,
+    "mae": 0.9682644199804539,
+    "medae": 0.7453596115112306,
+    "r2": 0.6618688146516645,
+    "mape": 20.131883818184438,
+    "within_10pct": 0.38831312017640573,
+    "within_20pct": 0.6758544652701213,
+    "within_1ty": 0.6202866593164278,
+    "residual_quantiles": {
+      "p05": -2.1567,
+      "p25": -0.7517,
+      "p50": -0.0084,
+      "p75": 0.7394,
+      "p95": 1.9937
+    }
+  },
+  "train_val_gap": 0.01817215978784481,
+  "epochs_ran": 70,
+  "scaler_n_samples_seen": 21161,
+  "artifacts": {
+    "checkpoint_path": "D:\\MyStuffs\\code\\ML - Neuron Network\\fsb-ml-final\\artifacts\\approach_1_linear_sgd\\checkpoints\\L02_best.pt",
+    "curve_path": "D:\\MyStuffs\\code\\ML - Neuron Network\\fsb-ml-final\\artifacts\\approach_1_linear_sgd\\curves\\L02_history.csv"
+  },
+  "target": {
+    "name": "raw",
+    "unit": "billion_vnd"
+  },
+  "features": {
+    "name": "P4_geo_priors",
+    "n_features": 345,
+    "scaled": true,
+    "preserve_nans": false
+  },
+  "model": {
+    "name": "linear_sgd",
+    "params": {
+      "batch_size": 128,
+      "lr": 0.01,
+      "weight_decay": 0.0,
+      "momentum": 0.0,
+      "loss": "mse",
+      "optimizer": "sgd",
+      "scaler": "standard",
+      "max_epochs": 200,
+      "patience": 20
+    }
+  },
+  "splits": {
+    "path": "D:\\MyStuffs\\code\\ML - Neuron Network\\fsb-ml-final\\experiments\\splits\\splits_v1.json",
+    "n_train": 21161,
+    "n_val": 4535,
+    "n_test": 4533
+  },
+  "metrics": {
+    "val": {
+      "model": "linear_sgd",
+      "rmse": 1.2891535399365515,
+      "mae": 0.9682644199804539,
+      "medae": 0.7453596115112306,
+      "r2": 0.6618688146516645,
+      "mape": 20.131883818184438,
+      "within_10pct": 0.38831312017640573,
+      "within_20pct": 0.6758544652701213,
+      "within_1ty": 0.6202866593164278,
+      "residual_quantiles": {
+        "p05": -2.1567,
+        "p25": -0.7517,
+        "p50": -0.0084,
+        "p75": 0.7394,
+        "p95": 1.9937
+      }
+    },
+    "test": null
+  },
+  "eval_test": false,
+  "train_seconds": 10.98161170000094,
+  "notes": "",
+  "task": "regression",
+  "outlier_filter": false
+}
