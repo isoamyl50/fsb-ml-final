@@ -1,3 +1,3 @@
-Access link and pull 2 folder to local and setup follow folder structure in the only image in the folder
+Access link and pull folder trainging_approach/mlp_adam to local and setup follow folder structure in the only image in the folder
 
-https://nextcloud.penomy.com/s/iL2pCWnrn9bBosQ
+https://nextcloud.penomy.com/s/FbeC7rSjJ4GM6FD
