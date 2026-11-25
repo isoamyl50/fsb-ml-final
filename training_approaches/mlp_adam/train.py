@@ -11,7 +11,8 @@ from data_split import TARGET
 
 CPU_THREADS = 6
 SEED = 42
-HIDDEN_UNITS = 64
+HIDDEN_UNITS = 128
+DROPOUT_RATE = 0.10
 BATCH_SIZE = 256
 LEARNING_RATE = 0.001
 MAX_EPOCHS = 150
@@ -99,10 +100,12 @@ def train() -> None:
     feature_count = len(train_columns)
     input_layer = tf.keras.layers.InputLayer(shape=(feature_count,))
     hidden_layer = tf.keras.layers.Dense(HIDDEN_UNITS, activation="relu")
+    dropout_layer = tf.keras.layers.Dropout(DROPOUT_RATE)
     price_layer = tf.keras.layers.Dense(1)
     model = tf.keras.Sequential()
     model.add(input_layer)
     model.add(hidden_layer)
+    model.add(dropout_layer)
     model.add(price_layer)
 
     optimizer = tf.keras.optimizers.Adam(learning_rate=LEARNING_RATE)
